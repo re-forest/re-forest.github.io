@@ -109,7 +109,7 @@
     <content><![CDATA[<h2 id="Traefik-使用"><a href="#Traefik-使用" class="headerlink" title="Traefik 使用"></a>Traefik 使用</h2><h3 id="網頁部屬"><a href="#網頁部屬" class="headerlink" title="網頁部屬"></a>網頁部屬</h3><blockquote>
 <p>達成能以 HTTPS 訪問的網頁站點部屬,並能針對訪問者IP進行白名單限制</p>
 </blockquote>
-<!---more--->
+<span id="more"></span>
 <h4 id="自有證書配置-HTTPS"><a href="#自有證書配置-HTTPS" class="headerlink" title="自有證書配置 HTTPS"></a>自有證書配置 HTTPS</h4><ul>
 <li><p>使用 Cloudflare 簽署的免費 TLS 憑證</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 kubectl 創建設定檔儲存憑證 </span></span><br><span class="line">kubectl create secret tls forest1106-cloudflare --cert=&lt;your.pem&gt; --key=&lt;your.key&gt; -n traefik-ingress</span><br></pre></td></tr></table></figure></li>
