@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>GitLab-CE 異地遷移與升級</title>
+    <url>/2021/12/15/GitLab-CE-%E7%95%B0%E5%9C%B0%E9%81%B7%E7%A7%BB%E8%88%87%E5%8D%87%E7%B4%9A/</url>
+    <content><![CDATA[<h1 id="GitLab-CE-異地遷移與升級"><a href="#GitLab-CE-異地遷移與升級" class="headerlink" title="GitLab-CE 異地遷移與升級"></a>GitLab-CE 異地遷移與升級</h1><h2 id="軟體需求"><a href="#軟體需求" class="headerlink" title="軟體需求"></a>軟體需求</h2><ol>
+<li><p>docker </p>
+</li>
+<li><p>docker-ce</p>
+<ol>
+<li>GitLab原始版本11.11.8</li>
+<li>postgresql 版本 10.7</li>
+</ol>
+</li>
+<li><p>docker-portainer</p>
+<span id="more"></span>
+<h2 id="遷移步驟"><a href="#遷移步驟" class="headerlink" title="遷移步驟"></a>遷移步驟</h2></li>
+<li><p>再遷移目標安裝 Docker</p>
+</li>
+<li><p>Docker 拉取相應版本 GitLab 版本</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">docker</span> <span class="string">pull</span> <span class="string">gitlab/gitlab-ce:11.11.8-ce.0</span></span><br></pre></td></tr></table></figure>
+
+<p>備註:需與原始備份GitLab版本相同</p>
+</li>
+<li><p>運行容器</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">docker</span> <span class="string">run</span> <span class="string">--detach</span> <span class="string">\</span></span><br><span class="line">           <span class="string">--hostname</span> <span class="string">gitlab.xxx.com</span> <span class="string">\</span></span><br><span class="line">           <span class="string">--publish</span> <span class="number">443</span><span class="string">:443</span> <span class="string">--publish</span> <span class="number">80</span><span class="string">:80</span> <span class="string">--publish</span> <span class="number">1024</span><span class="string">:1024</span> <span class="string">\</span></span><br><span class="line">           <span class="string">--name</span> <span class="string">gitlab</span> <span class="string">\</span></span><br><span class="line">           <span class="string">--restart</span> <span class="string">always</span> <span class="string">\</span></span><br><span class="line">           <span class="string">--volume</span> &#123;<span class="string">localhost</span> <span class="string">path</span>&#125;<span class="string">/config:/etc/gitlab</span> <span class="string">\</span></span><br><span class="line">           <span class="string">--volume</span> &#123;<span class="string">localhost</span> <span class="string">path</span>&#125;<span class="string">/logs:/var/log/gitlab</span> <span class="string">\</span></span><br><span class="line">           <span class="string">--volume</span> &#123;<span class="string">localhost</span> <span class="string">path</span>&#125;<span class="string">/data:/var/opt/gitlab</span> <span class="string">\</span></span><br><span class="line">           <span class="string">gitlab/gitlab-ce:11.11.8-ce.0</span></span><br></pre></td></tr></table></figure></li>
+<li><p>複製備份文件至 backups 目錄</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#停止容器</span></span><br><span class="line"><span class="string">docker</span> <span class="string">stop</span> <span class="string">gitlab</span></span><br><span class="line"><span class="comment">#搬移檔案</span></span><br><span class="line"><span class="string">cp</span> <span class="string">1548648399_2019_01_28_11.0.1_gitlab_backup.tar</span> <span class="string">/srv/gitlab/data/backups/</span></span><br><span class="line"><span class="comment">#啟動容器</span></span><br><span class="line"><span class="string">docker</span> <span class="string">start</span> <span class="string">gitlab</span></span><br></pre></td></tr></table></figure></li>
+<li><p>進入容器操作</p>
+<ol>
+<li><p>使用 docker-portainer 進入容器</p>
+</li>
+<li><p>恢復數據</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#停止服務</span></span><br><span class="line"><span class="string">gitlab-ctl</span> <span class="string">stop</span> <span class="string">unicorn</span></span><br><span class="line"><span class="string">gitlab-ctl</span> <span class="string">stop</span> <span class="string">sidekiq</span></span><br><span class="line"><span class="comment">#檢查狀態</span></span><br><span class="line"><span class="string">gitlab-ctl</span> <span class="string">status</span></span><br><span class="line"><span class="comment">#恢復備份</span></span><br><span class="line"><span class="string">gitlab-rake</span> <span class="string">gitlab:backup:restore</span> <span class="string">BACKUP=1548648399_2019_01_28_11.0.1</span></span><br><span class="line"><span class="comment">#重啟GitLab</span></span><br><span class="line"><span class="string">gitlab-ctl</span> <span class="string">restart</span></span><br><span class="line"><span class="comment">#驗證GitLab</span></span><br><span class="line"><span class="string">gitlab-rake</span> <span class="string">gitlab:check</span> <span class="string">SANITIZE=true</span></span><br></pre></td></tr></table></figure></li>
+<li><p>完成備份恢復</p>
+</li>
+</ol>
+</li>
+<li><p>升級 postgresql 版本</p>
+<ol>
+<li><p>GitLab原始版本11.11.8 本身自帶版本為 9.6</p>
+</li>
+<li><p>因原始數據串接外部 postgresql 版本為 10 需手動升級 postgresql 版本</p>
+</li>
+<li><p>使用 docker-portainer 進入容器</p>
+</li>
+<li><p>昇級 postgresql 版本</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#升級postgresql</span></span><br><span class="line"><span class="string">gitlab-ctl</span> <span class="string">pg-upgrade</span> <span class="number">10</span></span><br><span class="line"><span class="comment">#重啟GitLab</span></span><br><span class="line"><span class="string">gitlab-ctl</span> <span class="string">restart</span></span><br></pre></td></tr></table></figure></li>
+<li><p>完成所有遷移</p>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="版本升級步驟"><a href="#版本升級步驟" class="headerlink" title="版本升級步驟"></a>版本升級步驟</h2><ol>
+<li><p>使用Docker 版本升級方法</p>
+</li>
+<li><p>確認版本升級次序,其中有必要升級版詳細參照</p>
+</li>
+</ol>
+<ol start="3">
+<li><p>進行版本升級</p>
+<ol>
+<li><p>進行備份</p>
+</li>
+<li><p>停止進行中的容器</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#停止容器 gitlab</span></span><br><span class="line"><span class="string">docker</span> <span class="string">stop</span> <span class="string">gitlab</span></span><br></pre></td></tr></table></figure></li>
+<li><p>刪除現有容器</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#刪除容器 gitlab</span></span><br><span class="line"><span class="string">docker</span> <span class="string">rm</span> <span class="string">gitlab</span></span><br></pre></td></tr></table></figure></li>
+<li><p>拉取升級目標版本</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#本地版本為 11.11.8</span></span><br><span class="line"><span class="comment">#遵循官方文件升級必要版本 拉取 img 版本 12.0.12-ce.0</span></span><br><span class="line"><span class="string">docker</span> <span class="string">pull</span> <span class="string">gitlab/gitlab-ce:12.0.12-ce.0</span></span><br></pre></td></tr></table></figure></li>
+<li><p>同樣參數啟動容器</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">docker</span> <span class="string">run</span> <span class="string">--detach</span> <span class="string">\</span></span><br><span class="line">           <span class="string">--hostname</span> <span class="string">gitlab.xxx.com</span> <span class="string">\</span></span><br><span class="line">           <span class="string">--publish</span> <span class="number">443</span><span class="string">:443</span> <span class="string">--publish</span> <span class="number">80</span><span class="string">:80</span> <span class="string">--publish</span> <span class="number">1024</span><span class="string">:1024</span> <span class="string">\</span></span><br><span class="line">           <span class="string">--name</span> <span class="string">gitlab</span> <span class="string">\</span></span><br><span class="line">           <span class="string">--restart</span> <span class="string">always</span> <span class="string">\</span></span><br><span class="line">           <span class="string">--volume</span> <span class="string">/srv/gitlab/config:/etc/gitlab</span> <span class="string">\</span></span><br><span class="line">           <span class="string">--volume</span> <span class="string">/srv/gitlab/logs:/var/log/gitlab</span> <span class="string">\</span></span><br><span class="line">           <span class="string">--volume</span> <span class="string">/srv/gitlab/data:/var/opt/gitlab</span> <span class="string">\</span></span><br><span class="line">           <span class="string">gitlab/gitlab-ce:12.0.12-ce.0</span></span><br></pre></td></tr></table></figure></li>
+<li><p>在第一次運行時GitLab將重新配置並自我更新</p>
+</li>
+<li><p>完成版本升級</p>
+</li>
+</ol>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Docker</category>
+      </categories>
+      <tags>
+        <tag>GitLab-CE</tag>
+      </tags>
+  </entry>
+</search>
