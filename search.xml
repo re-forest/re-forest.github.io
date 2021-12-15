@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Cloudflare快取清除</title>
+    <url>/2021/12/15/Cloudflare%E5%BF%AB%E5%8F%96%E6%B8%85%E9%99%A4/</url>
+    <content><![CDATA[<h2 id="Cloudflare快取清除"><a href="#Cloudflare快取清除" class="headerlink" title="Cloudflare快取清除"></a>Cloudflare快取清除</h2><blockquote>
+<p>通過使用 Cloudflare api 進行快取清除</p>
+</blockquote>
+<span id="more"></span>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">E_mail=<span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">Zone_ID=<span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">Global_API_Key=<span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">curl -X POST <span class="string">&quot;https://api.cloudflare.com/client/v4/zones/<span class="variable">$Zone_ID</span>/purge_cache&quot;</span> \</span><br><span class="line">     -H <span class="string">&quot;X-Auth-Email: <span class="variable">$E_mail</span>&quot;</span> \</span><br><span class="line">     -H <span class="string">&quot;X-Auth-Key: <span class="variable">$Global_API_Key</span>&quot;</span> \</span><br><span class="line">     -H <span class="string">&quot;Content-Type: application/json&quot;</span> \</span><br><span class="line">     --data <span class="string">&#x27;&#123;&quot;purge_everything&quot;:true&#125;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;CloudFlare cache has been cleared&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">read</span> -s -n1 -p <span class="string">&quot;按任意按鍵結束...&quot;</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>cloudflare</category>
+      </categories>
+      <tags>
+        <tag>cloudflare</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>GitLab-CE 異地遷移與升級</title>
     <url>/2021/12/15/GitLab-CE-%E7%95%B0%E5%9C%B0%E9%81%B7%E7%A7%BB%E8%88%87%E5%8D%87%E7%B4%9A/</url>
     <content><![CDATA[<h1 id="GitLab-CE-異地遷移與升級"><a href="#GitLab-CE-異地遷移與升級" class="headerlink" title="GitLab-CE 異地遷移與升級"></a>GitLab-CE 異地遷移與升級</h1><h2 id="軟體需求"><a href="#軟體需求" class="headerlink" title="軟體需求"></a>軟體需求</h2><ol>
