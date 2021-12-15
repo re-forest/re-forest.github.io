@@ -85,4 +85,384 @@
         <tag>GitLab-CE</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Telegraf安裝</title>
+    <url>/2021/12/15/Telegraf%E5%AE%89%E8%A3%9D/</url>
+    <content><![CDATA[<h2 id="Telegraf安裝"><a href="#Telegraf安裝" class="headerlink" title="Telegraf安裝"></a>Telegraf安裝</h2><span id="more"></span>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">##</span></span><br><span class="line">wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -</span><br><span class="line"></span><br><span class="line"><span class="built_in">source</span> /etc/lsb-release</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;deb https://repos.influxdata.com/<span class="variable">$&#123;DISTRIB_ID,,&#125;</span> <span class="variable">$&#123;DISTRIB_CODENAME&#125;</span> stable&quot;</span> | sudo tee /etc/apt/sources.list.d/influxdb.list</span><br><span class="line"><span class="comment">##</span></span><br><span class="line">sudo apt-get update &amp;&amp; sudo apt-get install apt-transport-https</span><br><span class="line"></span><br><span class="line">wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -</span><br><span class="line"></span><br><span class="line"><span class="built_in">source</span> /etc/os-release</span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="built_in">test</span> <span class="variable">$VERSION_ID</span> = <span class="string">&quot;7&quot;</span> &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;deb https://repos.influxdata.com/debian wheezy stable&quot;</span> | sudo tee /etc/apt/sources.list.d/influxdb.list</span><br><span class="line"><span class="built_in">test</span> <span class="variable">$VERSION_ID</span> = <span class="string">&quot;8&quot;</span> &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;deb https://repos.influxdata.com/debian jessie stable&quot;</span> | sudo tee /etc/apt/sources.list.d/influxdb.list</span><br><span class="line"><span class="built_in">test</span> <span class="variable">$VERSION_ID</span> = <span class="string">&quot;9&quot;</span> &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;deb https://repos.influxdata.com/debian stretch stable&quot;</span> | sudo tee /etc/apt/sources.list.d/influxdb.list</span><br><span class="line"><span class="built_in">test</span> <span class="variable">$VERSION_ID</span> = <span class="string">&quot;10&quot;</span> &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;deb https://repos.influxdata.com/debian buster stable&quot;</span> | sudo tee /etc/apt/sources.list.d/influxdb.list</span><br><span class="line"><span class="comment">##</span></span><br><span class="line">sudo apt-get update &amp;&amp; sudo apt-get install telegraf</span><br><span class="line"></span><br><span class="line">sudo service telegraf start</span><br></pre></td></tr></table></figure>
+
+<h2 id="產生-config-設定檔案"><a href="#產生-config-設定檔案" class="headerlink" title="產生 config 設定檔案"></a>產生 config 設定檔案</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># telegraf 命令</span></span><br><span class="line">telegraf config &gt; telegraf.conf</span><br><span class="line"><span class="comment"># 產生文件目錄</span></span><br><span class="line">/etc/telegraf/telegraf.conf</span><br></pre></td></tr></table></figure>
+
+<h2 id="telegraf-conf設定"><a href="#telegraf-conf設定" class="headerlink" title="telegraf.conf設定"></a>telegraf.conf設定</h2><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># indluxdb 位址</span></span><br><span class="line"><span class="string">urls</span> <span class="string">=</span> [<span class="string">&quot;&lt; your domain &gt;&quot;</span>]</span><br><span class="line"><span class="comment"># db 名稱</span></span><br><span class="line"><span class="string">database</span> <span class="string">=</span> <span class="string">&quot;telegraf&quot;</span></span><br><span class="line"><span class="comment"># 抓取網路狀態資料</span></span><br><span class="line">[[<span class="string">inputs.net</span>]]</span><br></pre></td></tr></table></figure>
+
+<h2 id="重新啟動服務"><a href="#重新啟動服務" class="headerlink" title="重新啟動服務"></a>重新啟動服務</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo service telegraf restart</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>telegraf</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Traefik 2.5 使用</title>
+    <url>/2021/12/15/Traefik-2-5-%E4%BD%BF%E7%94%A8/</url>
+    <content><![CDATA[<h2 id="Traefik-使用"><a href="#Traefik-使用" class="headerlink" title="Traefik 使用"></a>Traefik 使用</h2><h3 id="網頁部屬"><a href="#網頁部屬" class="headerlink" title="網頁部屬"></a>網頁部屬</h3><blockquote>
+<p>達成能以 HTTPS 訪問的網頁站點部屬,並能針對訪問者IP進行白名單限制</p>
+</blockquote>
+<!---more--->
+<h4 id="自有證書配置-HTTPS"><a href="#自有證書配置-HTTPS" class="headerlink" title="自有證書配置 HTTPS"></a>自有證書配置 HTTPS</h4><ul>
+<li><p>使用 Cloudflare 簽署的免費 TLS 憑證</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 kubectl 創建設定檔儲存憑證 </span></span><br><span class="line">kubectl create secret tls forest1106-cloudflare --cert=&lt;your.pem&gt; --key=&lt;your.key&gt; -n traefik-ingress</span><br></pre></td></tr></table></figure></li>
+<li><p>自動生成HTTPS證書</p>
+<ul>
+<li>Traefik的ACME驗證方式主要有以下三種：<ul>
+<li>dnsChallenge</li>
+<li>tlsChallenge</li>
+<li>httpChallenge</li>
+</ul>
+</li>
+<li>採用 Cloudflare 簽署的免費 TLS 憑證較為方便不再贅述</li>
+</ul>
+</li>
+</ul>
+<h4 id="Traefik-Middlewares-設定"><a href="#Traefik-Middlewares-設定" class="headerlink" title="Traefik Middlewares 設定"></a>Traefik Middlewares 設定</h4><ul>
+<li><p>traefik-real-ip</p>
+<ul>
+<li><p>pilot 插件,啟用方式在 my-value.yaml 中增加相關參數</p>
+</li>
+<li><p>建立文件 middleware-traefik-real-ip.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">traefik.containo.us/v1alpha1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Middleware</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">traefik-real-ip</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">traefik-ingress</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">plugin:</span></span><br><span class="line">    <span class="attr">traefik-real-ip:</span></span><br><span class="line">      <span class="attr">excludednets:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">&quot;1.1.1.1/24&quot;</span>    </span><br></pre></td></tr></table></figure></li>
+<li><p>應用文件</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl apply -f middleware-traefik-real-ip.yaml</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>IP 白名單</p>
+<ul>
+<li><p>建立文件 middleware-ipwhiteList.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">traefik.containo.us/v1alpha1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Middleware</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">ipwhitelist</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">traefik-ingress</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ipWhiteList:</span></span><br><span class="line">    <span class="attr">sourceRange:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">&lt;</span> <span class="string">your</span> <span class="string">ip</span> <span class="string">&gt;</span></span><br><span class="line"><span class="string">    # 因搭配 cloudflare 後在 IP 取得上會直接取到 cloudflare 的代理 IP 而非真實 IP </span></span><br><span class="line"><span class="string">    # 因而搭配規則 traefik-real-ip 處理,將 IP 加入 X-Forwarded-For 中</span></span><br><span class="line"><span class="string">    # ex : X-Forwarded-For: &lt; your ip &gt;, &lt; cloudflare ip &gt;</span></span><br><span class="line"><span class="string">    # 並藉由深度設定取得真實 IP</span></span><br><span class="line"><span class="string">    ipStrategy:</span></span><br><span class="line"><span class="string">      depth: 1</span></span><br></pre></td></tr></table></figure></li>
+<li><p>應用 middleware-ipwhiteList.yaml</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl apply -f .\middleware-ipwhiteList.yaml</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h4 id="部屬測試服務-whoami"><a href="#部屬測試服務-whoami" class="headerlink" title="部屬測試服務 whoami"></a>部屬測試服務 whoami</h4><ul>
+<li><p>建立 whoami.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="meta">--- </span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span> </span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">  <span class="attr">name:</span> <span class="string">whoami</span> </span><br><span class="line">  <span class="attr">labels:</span> </span><br><span class="line">    <span class="attr">app:</span> <span class="string">whoami</span> </span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">  <span class="attr">containers:</span> </span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">whoami</span> </span><br><span class="line">      <span class="attr">image:</span> <span class="string">traefik/whoami:latest</span> </span><br><span class="line">      <span class="attr">ports:</span> </span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span> </span><br><span class="line"><span class="meta">--- </span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span> </span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">  <span class="attr">name:</span> <span class="string">whoami</span> </span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">  <span class="attr">ports:</span> </span><br><span class="line">    <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">80</span> </span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">TCP</span> </span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">80</span> </span><br><span class="line">  <span class="attr">selector:</span> </span><br><span class="line">    <span class="attr">app:</span> <span class="string">whoami</span> </span><br><span class="line">  <span class="attr">type:</span> <span class="string">ClusterIP</span> </span><br></pre></td></tr></table></figure></li>
+<li><p>建立入口 whoami-ingress.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">traefik.containo.us/v1alpha1</span> </span><br><span class="line"><span class="attr">kind:</span> <span class="string">IngressRoute</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">  <span class="attr">name:</span> <span class="string">whoami-route</span> </span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">  <span class="attr">entryPoints:</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="string">websecure</span></span><br><span class="line">  <span class="attr">routes:</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">Host(`whoami.forest-ds.org`)</span></span><br><span class="line">  	<span class="comment"># 套用 middleware</span></span><br><span class="line">    <span class="attr">middlewares:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">traefik-real-ip</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">ipwhitelist</span></span><br><span class="line">    <span class="attr">kind:</span> <span class="string">Rule</span> </span><br><span class="line">    <span class="attr">services:</span> </span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">whoami</span> </span><br><span class="line">        <span class="attr">port:</span> <span class="number">80</span></span><br><span class="line">  <span class="attr">tls:</span></span><br><span class="line">  	<span class="comment"># 套用憑證</span></span><br><span class="line">    <span class="attr">secretName:</span> <span class="string">forest1106-cloudflare</span></span><br></pre></td></tr></table></figure></li>
+<li><p>應用 whoami 服務</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 將服務部屬至 namespace traefik-ingress 下</span></span><br><span class="line">kubectl apply -f .\whoami.yaml -n traefik-ingress</span><br></pre></td></tr></table></figure></li>
+<li><p>應用 whoami 入口規則</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 將入口規則部屬至 namespace traefik-ingress 下</span></span><br><span class="line">kubectl apply -f .\whoami-ingress.yaml -n traefik-ingress</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="本地既有服務導向"><a href="#本地既有服務導向" class="headerlink" title="本地既有服務導向"></a>本地既有服務導向</h3><blockquote>
+<p>Traefik 導向不同 namespace 、 cluster 或既有存在於 kubernet 外的 service . 這種情況下，就不需要設定 label selector，因為此時的 service 並不是以 pod 作為 backend service ,所以必須自行定義  endpoint 供 service 指向 .</p>
+</blockquote>
+<h4 id="建立-endpoint-及-service-文件"><a href="#建立-endpoint-及-service-文件" class="headerlink" title="建立 endpoint 及 service 文件"></a>建立 endpoint 及 service 文件</h4><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">my-service</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">8899</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="string">&lt;your</span> <span class="string">other</span> <span class="string">service</span> <span class="string">port&gt;</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Endpoints</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">my-service</span></span><br><span class="line"><span class="attr">subsets:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">addresses:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">ip:</span> <span class="string">&lt;your</span> <span class="string">other</span> <span class="string">service</span> <span class="string">ip&gt;</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">port:</span> <span class="string">&lt;your</span> <span class="string">other</span> <span class="string">service</span> <span class="string">port&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="建立-ingress-文件"><a href="#建立-ingress-文件" class="headerlink" title="建立 ingress 文件"></a>建立 ingress 文件</h4><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">traefik.containo.us/v1alpha1</span> </span><br><span class="line"><span class="attr">kind:</span> <span class="string">IngressRoute</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">  <span class="attr">name:</span> <span class="string">ar-route</span> </span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">  <span class="attr">entryPoints:</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="string">websecure</span></span><br><span class="line">  <span class="attr">routes:</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">Host(`your</span> <span class="string">domain`)</span></span><br><span class="line">    <span class="attr">middlewares:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">traefik-real-ip</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">ipwhitelist</span></span><br><span class="line">    <span class="attr">kind:</span> <span class="string">Rule</span> </span><br><span class="line">    <span class="attr">services:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">kind:</span> <span class="string">Service</span> </span><br><span class="line">        <span class="attr">name:</span> <span class="string">my-service</span></span><br><span class="line">        <span class="attr">namespace:</span> <span class="string">traefik-ingress</span></span><br><span class="line">        <span class="attr">passHostHeader:</span> <span class="literal">true</span></span><br><span class="line">        <span class="attr">port:</span> <span class="number">8899</span></span><br><span class="line">  <span class="attr">tls:</span> </span><br><span class="line">    <span class="attr">secretName:</span> <span class="string">forest1106-cloudflare</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="多端口服務設定"><a href="#多端口服務設定" class="headerlink" title="多端口服務設定"></a>多端口服務設定</h4><blockquote>
+<p>若 Endpoint 有多個端口 Service 也可設定多個端口開放</p>
+</blockquote>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">my-service</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">MyApp</span></span><br><span class="line">  <span class="comment"># 透過指定不同的 name 可以清楚知道每個 port 的目的</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">80</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">9376</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">https</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">443</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">9377</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="TCP服務部屬"><a href="#TCP服務部屬" class="headerlink" title="TCP服務部屬"></a>TCP服務部屬</h3><blockquote>
+<p>Traefik2.0 開始支援 TCP 服務,這邊以部屬單點 Redis 服務做來進行 TCP 服務暴露示範.</p>
+</blockquote>
+<h4 id="部屬-Redis"><a href="#部屬-Redis" class="headerlink" title="部屬 Redis"></a>部屬 Redis</h4><ul>
+<li><p>建立 redis.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span> </span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">  <span class="attr">name:</span> <span class="string">redis</span> </span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">  <span class="attr">selector:</span> </span><br><span class="line">    <span class="attr">matchLabels:</span> </span><br><span class="line">      <span class="attr">app:</span> <span class="string">redis</span> </span><br><span class="line">  <span class="attr">template:</span> </span><br><span class="line">    <span class="attr">metadata:</span> </span><br><span class="line">      <span class="attr">labels:</span> </span><br><span class="line">        <span class="attr">app:</span> <span class="string">redis</span> </span><br><span class="line">    <span class="attr">spec:</span> </span><br><span class="line">      <span class="attr">containers:</span> </span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">redis</span> </span><br><span class="line">        <span class="attr">image:</span> <span class="string">redis:5.0.14</span> </span><br><span class="line">        <span class="attr">ports:</span> </span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">6379</span> </span><br><span class="line">          <span class="attr">protocol:</span> <span class="string">TCP</span> </span><br><span class="line"><span class="meta">--- </span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span> </span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">  <span class="attr">name:</span> <span class="string">redis</span> </span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">  <span class="attr">ports:</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">6379</span> </span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">6379</span> </span><br><span class="line">  <span class="attr">selector:</span> </span><br><span class="line">    <span class="attr">app:</span> <span class="string">redis</span> </span><br></pre></td></tr></table></figure></li>
+<li><p>應用 redis.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">kubectl</span> <span class="string">apply</span> <span class="string">-f</span> <span class="string">redis.yaml</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="暴露-TCP-服務"><a href="#暴露-TCP-服務" class="headerlink" title="暴露 TCP 服務"></a>暴露 TCP 服務</h4><blockquote>
+<p>由於 Traefik 中使用 TCP 路由配置需要 SNI ,而 SNI 依賴 TLS 所以需要配置證書,但如果沒有證書的話,可以使用萬用字元 * 進行配置.</p>
+</blockquote>
+<ul>
+<li><p>建立 ingressroute-redis.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">traefik.containo.us/v1alpha1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">IngressRouteTCP</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">redis</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">entryPoints:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">redis</span></span><br><span class="line">  <span class="attr">routes:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">HostSNI(`*`)</span></span><br><span class="line">    <span class="attr">services:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">redis</span></span><br><span class="line">      <span class="attr">port:</span> <span class="number">6379</span></span><br></pre></td></tr></table></figure></li>
+<li><p>修改 Traefik 的部署文件 my-value.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">ports:</span> </span><br><span class="line">  <span class="attr">traefik:</span> </span><br><span class="line">    <span class="attr">port:</span> <span class="number">9000</span> </span><br><span class="line">    <span class="attr">expose:</span> <span class="literal">true</span> </span><br><span class="line">  <span class="attr">web:</span> </span><br><span class="line">    <span class="attr">port:</span> <span class="number">8000</span> </span><br><span class="line">    <span class="attr">hostPort:</span> <span class="number">80</span> </span><br><span class="line">    <span class="attr">expose:</span> <span class="literal">true</span> </span><br><span class="line">  <span class="attr">websecure:</span> </span><br><span class="line">    <span class="attr">port:</span> <span class="number">8443</span> </span><br><span class="line">    <span class="attr">hostPort:</span> <span class="number">443</span> </span><br><span class="line">    <span class="attr">expose:</span> <span class="literal">true</span> </span><br><span class="line">  <span class="comment">#增加監聽端口</span></span><br><span class="line">  <span class="attr">redis:</span> </span><br><span class="line">    <span class="attr">port:</span> <span class="number">6379</span> </span><br><span class="line">    <span class="attr">containerPort:</span> <span class="number">6379</span> </span><br><span class="line">    <span class="attr">hostPort:</span> <span class="number">6379</span> </span><br><span class="line"><span class="attr">additionalArguments:</span> </span><br><span class="line">  <span class="comment">#增加 entryPoints 參數</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;--entryPoints.redis.address=:6379&quot;</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;--serversTransport.insecureSkipVerify=true&quot;</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;--api.insecure=true&quot;</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;--api.dashboard=true&quot;</span> </span><br></pre></td></tr></table></figure></li>
+<li><p>應用 ingressroute-redis.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">kubectl</span> <span class="string">apply</span> <span class="string">-f</span> <span class="string">ingressroute-redis.yaml</span></span><br></pre></td></tr></table></figure></li>
+<li><p>Upgrade Traefik 以套用參數</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">helm</span> <span class="string">upgrade</span> <span class="string">traefik</span> <span class="string">-n</span> <span class="string">traefik-ingress</span> <span class="string">-f</span> <span class="string">my-value.yaml</span> <span class="string">.</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="測試-Redis"><a href="#測試-Redis" class="headerlink" title="測試  Redis"></a>測試  Redis</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># redis-cli -h &lt;your domain&gt; </span></span><br><span class="line">&lt;your domain&gt;:6379&gt; <span class="built_in">set</span>  a b </span><br><span class="line">OK </span><br><span class="line">&lt;your domain&gt;:6379&gt; get a </span><br><span class="line"><span class="string">&quot;b&quot;</span> </span><br><span class="line">&lt;your domain&gt;:6379&gt;  </span><br></pre></td></tr></table></figure>
+
+<h3 id="Canary-Deployment-金絲雀發布-Gray-Release-灰度發布"><a href="#Canary-Deployment-金絲雀發布-Gray-Release-灰度發布" class="headerlink" title="Canary Deployment ( 金絲雀發布 ) /  Gray Release ( 灰度發布 )"></a>Canary Deployment ( 金絲雀發布 ) /  Gray Release ( 灰度發布 )</h3><blockquote>
+<p>灰度發布有時候也會稱為金絲雀發布,主要就是讓一部分測試的服務也參與到線上去,測試觀察看是否符號上線要求。</p>
+</blockquote>
+<h4 id="部署-appv1-、-appv2-應用測試灰度發布"><a href="#部署-appv1-、-appv2-應用測試灰度發布" class="headerlink" title="部署 appv1 、 appv2 應用測試灰度發布"></a>部署 appv1 、 appv2 應用測試灰度發布</h4><ul>
+<li><p>建立 appv1.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="meta">--- </span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span> </span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">  <span class="attr">name :</span> <span class="string">appv1</span> </span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">  <span class="attr">selector:</span> </span><br><span class="line">    <span class="attr">matchLabels:</span> </span><br><span class="line">      <span class="attr">app:</span> <span class="string">appv1</span> </span><br><span class="line">  <span class="attr">template:</span> </span><br><span class="line">    <span class="attr">metadata:</span> </span><br><span class="line">      <span class="attr">labels:</span> </span><br><span class="line">        <span class="attr">use:</span> <span class="string">test</span> </span><br><span class="line">        <span class="attr">app:</span> <span class="string">appv1</span> </span><br><span class="line">    <span class="attr">spec:</span> </span><br><span class="line">      <span class="attr">containers:</span> </span><br><span class="line">      <span class="bullet">-</span>  <span class="attr">name :</span> <span class="string">nginx</span> </span><br><span class="line">        <span class="attr">image:</span> <span class="string">nginx</span> </span><br><span class="line">        <span class="attr">imagePullPolicy:</span> <span class="string">IfNotPresent</span> </span><br><span class="line">        <span class="attr">lifecycle:</span> </span><br><span class="line">          <span class="attr">postStart:</span> </span><br><span class="line">            <span class="attr">exec :</span></span><br><span class="line">              <span class="comment"># 首頁插入文字區別 appv1</span></span><br><span class="line">              <span class="attr">command:</span>  [ <span class="string">&quot;/bin/sh&quot;</span> ,  <span class="string">&quot;-c&quot;</span> ,  <span class="string">&quot;echo Hello v1 &gt; /usr/share/nginx/html/index.html&quot;</span> ] </span><br><span class="line">        <span class="attr">ports:</span> </span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span> </span><br><span class="line">          <span class="attr">name :</span> <span class="string">portv1</span> </span><br><span class="line"> </span><br><span class="line"><span class="meta">--- </span></span><br><span class="line"><span class="meta"> </span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span> </span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">  <span class="attr">name :</span> <span class="string">appv1</span> </span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">  <span class="attr">selector:</span> </span><br><span class="line">    <span class="attr">app:</span> <span class="string">appv1</span> </span><br><span class="line">  <span class="attr">ports:</span> </span><br><span class="line">  <span class="bullet">-</span>  <span class="attr">name :</span> <span class="string">http</span> </span><br><span class="line">    <span class="attr">port:</span> <span class="number">80</span> </span><br><span class="line">    <span class="attr">targetPort:</span> <span class="string">portv1</span> </span><br></pre></td></tr></table></figure></li>
+<li><p>建立 appv2.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="meta">--- </span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span> </span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">  <span class="attr">name :</span> <span class="string">appv2</span> </span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">  <span class="attr">selector:</span> </span><br><span class="line">    <span class="attr">matchLabels:</span> </span><br><span class="line">      <span class="attr">app:</span> <span class="string">appv2</span> </span><br><span class="line">  <span class="attr">template:</span> </span><br><span class="line">    <span class="attr">metadata:</span> </span><br><span class="line">      <span class="attr">labels:</span> </span><br><span class="line">        <span class="attr">use:</span> <span class="string">test</span> </span><br><span class="line">        <span class="attr">app:</span> <span class="string">appv2</span> </span><br><span class="line">    <span class="attr">spec:</span> </span><br><span class="line">      <span class="attr">containers:</span> </span><br><span class="line">      <span class="bullet">-</span>  <span class="attr">name :</span> <span class="string">nginx</span> </span><br><span class="line">        <span class="attr">image:</span> <span class="string">nginx</span> </span><br><span class="line">        <span class="attr">imagePullPolicy:</span> <span class="string">IfNotPresent</span> </span><br><span class="line">        <span class="attr">lifecycle:</span> </span><br><span class="line">          <span class="attr">postStart:</span> </span><br><span class="line">            <span class="attr">exec :</span> </span><br><span class="line">              <span class="comment"># 首頁插入文字區別 appv2</span></span><br><span class="line">              <span class="attr">command:</span>  [ <span class="string">&quot;/bin/sh&quot;</span> ,  <span class="string">&quot;-c&quot;</span> ,  <span class="string">&quot;echo Hello v2 &gt; /usr/share/nginx/html/index.html&quot;</span> ] </span><br><span class="line">        <span class="attr">ports:</span> </span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span> </span><br><span class="line">          <span class="attr">name :</span> <span class="string">portv2</span> </span><br><span class="line"> </span><br><span class="line"><span class="meta">--- </span></span><br><span class="line"><span class="meta"> </span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span> </span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">  <span class="attr">name :</span> <span class="string">appv2</span> </span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">  <span class="attr">selector:</span> </span><br><span class="line">    <span class="attr">app:</span> <span class="string">appv2</span> </span><br><span class="line">  <span class="attr">ports:</span> </span><br><span class="line">  <span class="bullet">-</span>  <span class="attr">name :</span> <span class="string">http</span> </span><br><span class="line">    <span class="attr">port:</span> <span class="number">80</span> </span><br><span class="line">    <span class="attr">targetPort:</span> <span class="string">portv2</span> </span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="創建TraefikService"><a href="#創建TraefikService" class="headerlink" title="創建TraefikService"></a>創建TraefikService</h4><blockquote>
+<p>Traefik 在 2.1 版本以後新增了一個 TraefikService的CRD 可以直接利用這個對象來配置WRR.</p>
+</blockquote>
+<ul>
+<li><p>建立 gray-service.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">traefik.containo.us/v1alpha1</span> </span><br><span class="line"><span class="attr">kind:</span> <span class="string">TraefikService</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">  <span class="attr">name :</span> <span class="string">app-wrr</span> </span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">  <span class="attr">weighted:</span> </span><br><span class="line">    <span class="attr">services:</span> </span><br><span class="line">      <span class="comment"># 設定帶權重的輪詢(WRR)</span></span><br><span class="line">      <span class="bullet">-</span>  <span class="attr">name :</span> <span class="string">appv1</span> </span><br><span class="line">        <span class="attr">weight:</span> <span class="number">3</span> </span><br><span class="line">        <span class="attr">port:</span> <span class="number">80</span> </span><br><span class="line">        <span class="attr">kind:</span> <span class="string">Service</span> </span><br><span class="line">      <span class="bullet">-</span>  <span class="attr">name :</span> <span class="string">appv2</span> </span><br><span class="line">        <span class="attr">weight:</span> <span class="number">1</span> </span><br><span class="line">        <span class="attr">port:</span> <span class="number">80</span> </span><br><span class="line">        <span class="attr">kind:</span> <span class="string">Service</span> </span><br></pre></td></tr></table></figure></li>
+<li><p>建立 gray-ingress.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">traefik.containo.us/v1alpha1</span> </span><br><span class="line"><span class="attr">kind:</span> <span class="string">IngressRoute</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">  <span class="attr">name :</span> <span class="string">app-ingressroute-canary</span>  </span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">  <span class="attr">entryPoints:</span> </span><br><span class="line">    <span class="bullet">-</span> <span class="string">web</span> </span><br><span class="line">  <span class="attr">routes:</span> </span><br><span class="line">  <span class="comment"># 注意這邊 sevice kid 要設定為 TraefikService</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">Host(`&lt;your</span> <span class="string">domain&gt;`)</span> </span><br><span class="line">    <span class="attr">kind:</span>  <span class="string">Rule</span> </span><br><span class="line">    <span class="attr">services:</span> </span><br><span class="line">    <span class="bullet">-</span>  <span class="attr">name :</span> <span class="string">app-wrr</span> </span><br><span class="line">      <span class="attr">kind:</span> <span class="string">TraefikService</span> </span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="進行測試"><a href="#進行測試" class="headerlink" title="進行測試"></a>進行測試</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 依照 WRR 設定顯示結果</span></span><br><span class="line">Curl https://&lt;your domain&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="流量複製"><a href="#流量複製" class="headerlink" title="流量複製"></a>流量複製</h3><blockquote>
+<p>在 Traefik 2.0 之後引入了的鏡像服務,它可以將請求的流量按規則復制一份發送給其他服務,並且會忽略這部分請求的響應.</p>
+</blockquote>
+<h4 id="創建TraefikService-1"><a href="#創建TraefikService-1" class="headerlink" title="創建TraefikService"></a>創建TraefikService</h4><blockquote>
+<p>應用部分使用 appv1 、 appv2 進行測試,這邊僅新增鏡像規則,及路由規則</p>
+</blockquote>
+<ul>
+<li><p>建立 mirror-service.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">traefik.containo.us/v1alpha1</span> </span><br><span class="line"><span class="attr">kind:</span> <span class="string">TraefikService</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">  <span class="attr">name :</span> <span class="string">app-mirror</span> </span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">  <span class="attr">mirroring:</span> </span><br><span class="line">    <span class="attr">name :</span> <span class="string">appv1</span> </span><br><span class="line">    <span class="attr">port:</span> <span class="number">80</span> </span><br><span class="line">    <span class="attr">mirrors:</span> </span><br><span class="line">    <span class="bullet">-</span>  <span class="attr">name :</span> <span class="string">appv2</span> </span><br><span class="line">      <span class="comment"># 定義將請求到 appv1 的 50% 請求復製到 appv2</span></span><br><span class="line">      <span class="attr">percent:</span> <span class="number">50</span> </span><br><span class="line">      <span class="attr">port:</span> <span class="number">80</span> </span><br></pre></td></tr></table></figure></li>
+<li><p>建立 mirror-ingress.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">traefik.containo.us/v1alpha1</span> </span><br><span class="line"><span class="attr">kind:</span> <span class="string">IngressRoute</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">  <span class="attr">name :</span> <span class="string">app-ingressroute-mirror</span> </span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">  <span class="attr">entryPoints:</span> </span><br><span class="line">    <span class="bullet">-</span> <span class="string">web</span> </span><br><span class="line">  <span class="attr">routes:</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">Host(`&lt;your</span> <span class="string">domain&gt;`)</span> </span><br><span class="line">    <span class="attr">kind:</span>  <span class="string">Rule</span> </span><br><span class="line">    <span class="attr">services:</span> </span><br><span class="line">    <span class="bullet">-</span>  <span class="attr">name :</span> <span class="string">app-mirror</span> </span><br><span class="line">      <span class="attr">kind:</span> <span class="string">TraefikService</span> </span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="進行測試-1"><a href="#進行測試-1" class="headerlink" title="進行測試"></a>進行測試</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 依照 mirror 設定顯示結果,此 Curl 僅會有 v1 響應.</span></span><br><span class="line">Curl https://&lt;your domain&gt;</span><br><span class="line"><span class="comment"># 檢查 v1 , v2 service log 應與 mirror 規則相符 ex: 4次需求 v1 4次 , v2 2次</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>kubernetes</category>
+      </categories>
+      <tags>
+        <tag>Traefik</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iPerf3  網路速度測試工具</title>
+    <url>/2021/12/15/iPerf3-%E7%B6%B2%E8%B7%AF%E9%80%9F%E5%BA%A6%E6%B8%AC%E8%A9%A6%E5%B7%A5%E5%85%B7/</url>
+    <content><![CDATA[<h2 id="iPerf3-網路速度測試工具"><a href="#iPerf3-網路速度測試工具" class="headerlink" title="iPerf3  網路速度測試工具"></a>iPerf3  網路速度測試工具</h2><h4 id="支援平台"><a href="#支援平台" class="headerlink" title="支援平台"></a>支援平台</h4><ul>
+<li><p>Windows、Mac OS X、Linux、FreeBSD</p>
+<span id="more"></span>
+<h4 id="支援傳輸協定"><a href="#支援傳輸協定" class="headerlink" title="支援傳輸協定"></a>支援傳輸協定</h4></li>
+<li><p>TCP、UDP、SCTP </p>
+</li>
+</ul>
+<h4 id="支援網路位址"><a href="#支援網路位址" class="headerlink" title="支援網路位址"></a>支援網路位址</h4><ul>
+<li>IPv4、IPv6 </li>
+</ul>
+<h4 id="Win10安裝方法"><a href="#Win10安裝方法" class="headerlink" title="Win10安裝方法"></a>Win10安裝方法</h4><ul>
+<li><a href="https://iperf.fr/iperf-download.php">官方網站下載安裝</a></li>
+</ul>
+<h4 id="Debian-Ubuntu-Linux-安裝方式"><a href="#Debian-Ubuntu-Linux-安裝方式" class="headerlink" title="Debian/Ubuntu Linux 安裝方式"></a>Debian/Ubuntu Linux 安裝方式</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install iperf3</span><br></pre></td></tr></table></figure>
+
+<h4 id="測試網路頻寬"><a href="#測試網路頻寬" class="headerlink" title="測試網路頻寬"></a>測試網路頻寬</h4><ul>
+<li><p>一般在使用 iPerf3 測試時，要同時在 server 端與 client 端都各執行一個 iPerf3 程式，讓它們互相傳送資料進行測試，首先啟動 server 端的 <code>iperf3</code>：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Server 端</span></span><br><span class="line">iperf3 -s</span><br></pre></td></tr></table></figure></li>
+<li><p>client 端執行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Client 端</span></span><br><span class="line">iperf3 -c SERVER_IP</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="iPerf3-進階指令"><a href="#iPerf3-進階指令" class="headerlink" title="iPerf3 進階指令"></a>iPerf3 進階指令</h4><ul>
+<li><h3 id="測試時間"><a href="#測試時間" class="headerlink" title="測試時間"></a>測試時間</h3><ul>
+<li><p><code>-t</code> 參數可以指定傳輸測試的持續時間，而 <code>-i</code> 可以指定輸出數據的間隔時間：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 測試 20 秒，每隔 4 秒輸出測試數據</span></span><br><span class="line">iperf3 -c SERVER_IP -t 20 -i 4</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="儲存測試結果"><a href="#儲存測試結果" class="headerlink" title="儲存測試結果"></a>儲存測試結果</h3><ul>
+<li><p><code>--logfile</code> 參數可以將輸出的測試結果報表或是錯誤訊息儲存至檔案中：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 將輸出訊息儲存至 output.txt 檔案中</span></span><br><span class="line">iperf3 -c SERVER_IP --logfile output.txt</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="指定連接埠"><a href="#指定連接埠" class="headerlink" title="指定連接埠"></a>指定連接埠</h3><ul>
+<li><p>iPerf3 預設會使用的連接埠（port）是 <code>5201</code>，若要自行指定連接埠，可以使用 <code>-p</code> 參數：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 12345 這個連接埠的 server</span></span><br><span class="line">iperf3 -s -p 12345</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 12345 這個連接埠的 client</span></span><br><span class="line">iperf3 -c SERVER_IP -p 12345</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="JSON-格式輸出"><a href="#JSON-格式輸出" class="headerlink" title="JSON 格式輸出"></a>JSON 格式輸出</h3><ul>
+<li><p>若要使用程式讀取 iPerf3 的測試結果，可將輸出格式改為 JSON 會更方便。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 JSON 格式輸出</span></span><br><span class="line">iperf3 -c SERVER_IP -J</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="多線連接"><a href="#多線連接" class="headerlink" title="多線連接"></a>多線連接</h3><ul>
+<li><p><code>-P</code> 參數可以指定同時使用幾條連線進行測試：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 同時使用 2 條連線測試</span></span><br><span class="line">iperf3 -c SERVER_IP -P 2</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="UDP-傳輸協定"><a href="#UDP-傳輸協定" class="headerlink" title="UDP 傳輸協定"></a>UDP 傳輸協定</h3><ul>
+<li><p>若要測試 UDP 傳輸協定的效能，可以使用 <code>-u</code> 參數：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 UDP 傳輸協定</span></span><br><span class="line">iperf3 -c SERVER_IP -u</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="反向傳輸-上傳"><a href="#反向傳輸-上傳" class="headerlink" title="反向傳輸(上傳)"></a>反向傳輸(上傳)</h3><ul>
+<li><p>iPerf3 預設會測試上傳的速度（由 client 傳送資料，而 server 負責接收）若要測試下載的速度（由 server 傳送資料，而 client 負責接收），則可以使用 <code>-R</code> 參數：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 測試反向傳輸（下載）</span></span><br><span class="line">iperf3 -c SERVER_IP -R</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="IPv4-與-IPv6"><a href="#IPv4-與-IPv6" class="headerlink" title="IPv4 與 IPv6"></a>IPv4 與 IPv6</h3><ul>
+<li><p><code>-4</code> 與 <code>-6</code> 可以指定只使用 IPv4 或 IPv6：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 只使用 IPv4</span></span><br><span class="line">iperf3 -c SERVER_IP -4</span><br><span class="line"></span><br><span class="line"><span class="comment"># 只使用 IPv6</span></span><br><span class="line">iperf3 -c SERVER_IP -6</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="自訂傳送檔案"><a href="#自訂傳送檔案" class="headerlink" title="自訂傳送檔案"></a>自訂傳送檔案</h3><ul>
+<li><p>我們可以使用 <code>-f</code> 自訂用來測試傳送的檔案：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 YOUR_FILE 這個檔案來測試傳送速度</span></span><br><span class="line">iperf3 -c SERVER_IP -F YOUR_FILE</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>iperf3</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>kubernetes本地安裝到服務建立</title>
+    <url>/2021/12/15/kubernetes%E6%9C%AC%E5%9C%B0%E5%AE%89%E8%A3%9D%E5%88%B0%E6%9C%8D%E5%8B%99%E5%BB%BA%E7%AB%8B/</url>
+    <content><![CDATA[<h2 id="kubeadm-搭建-kubernetes-群集"><a href="#kubeadm-搭建-kubernetes-群集" class="headerlink" title="kubeadm 搭建 kubernetes 群集"></a>kubeadm 搭建 kubernetes 群集</h2><h3 id="安装-Container-Runtime"><a href="#安装-Container-Runtime" class="headerlink" title="安装 Container Runtime"></a>安装 Container Runtime</h3><p>​    Container Runtime 是負責運行 Kubernetes 支持多種容器運行環境: Docker, Containerd, CRI-O.</p>
+<p>​    這邊使用 Docker 作為Container Runtime.</p>
+<span id="more"></span>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#Warning:</span></span><br><span class="line"><span class="comment">#Always examine scripts downloaded from the internet before running them locally.</span></span><br><span class="line"></span><br><span class="line">curl -fsSL https://get.docker.com -o get-docker.sh</span><br><span class="line">sudo sh get-docker.sh</span><br></pre></td></tr></table></figure>
+
+<p>備註 : </p>
+<p>​        需修改 docker 的 cgroup driver.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#cgroups ( Control Groups ) 是linux 內核提供的一種機制它可以限制、記錄任務組所使用的物理資源它是內核附加在程序上的hook,使程序運行時對資源的調度觸發相應的hook,達到資源追踪和限制資源使用的目的.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#docker 默認的 Cgroup Driver 是 cgroupfs , cgroupfs 是 cgroup 為給用戶提供的操作接口而開發的虛擬文件系統類型,它和 sysfs , proc 類似, 可以向用戶展示cgroup 的 hierarchy ,通知 kernel 用戶對 cgroup 改動,對 cgroup 的查詢和修改只能通過 cgroupfs 文件系統來進行.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Kubernetes 推薦使用 systemd 來代替 cgroupfs , 因為 systemd 是 Kubernetes 自帶的 cgroup 管理器,負責為每個進程分配 cgroups ,但 docker 的 cgroup driver 默認是 cgroupfs , 這樣就同時運行有兩個 cgroup 控制管理器,當資源有壓力的情況時,有可能出現不穩定的情況.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#打開 daemon.json</span></span><br><span class="line">nano /etc/docker/daemon.json</span><br><span class="line"></span><br><span class="line"><span class="comment">#填入</span></span><br><span class="line">&#123;<span class="string">&quot;exec-opts&quot;</span>: [<span class="string">&quot;native.cgroupdriver=systemd&quot;</span>]&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">#重啟 docker</span></span><br><span class="line">systemctl restart docker</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="安装-kubeadm、kubelet-和-kubectl"><a href="#安装-kubeadm、kubelet-和-kubectl" class="headerlink" title="安装 kubeadm、kubelet 和 kubectl"></a>安装 kubeadm、kubelet 和 kubectl</h3><ul>
+<li><code>kubeadm</code>：用來初始化集群的指令。</li>
+<li><code>kubelet</code>：在集群中的每個節點上用來啟動Pod 和容器等。</li>
+<li><code>kubectl</code>：用來與集群通信的命令行工具。</li>
+</ul>
+<blockquote>
+<p>kubeadm 不能幫你安裝或者管理 如果不這樣做，則存在發生版本偏差的風險，可能會導致一些預料之外的錯誤和問題。</p>
+<p>然而，控制平面與kubelet 間的相差一個次要版本不一致是支持的，但kubelet 的版本不可以超過API 服務器的版本。</p>
+<p>例如，1.7.0 版本的kubelet 可以完全兼容1.8.0 版本的API 服務器，反之則不可以。</p>
+</blockquote>
+<ul>
+<li><p>安裝之前關閉swap</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#編輯fstab</span></span><br><span class="line">nano /etc/fstab</span><br><span class="line"></span><br><span class="line"><span class="comment">#註解 swap</span></span><br><span class="line">/swap.img &gt; <span class="comment">#/swap.img</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#重新啟動</span></span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>​        kubernetes 會要求關閉主機的 swap 交換空間，是因為在 cpu及 memory 不足的情況下, unix 系統預設會將記憶體內的資料搬移到 swap 做交換,但這種交換動作對於容器平台來說非常浪費效能，kubernetes 希望在 cpu及 memory 滿載的時候直接將 node 視為滿載,並回報 master 調度,所以才會有將 swap 關閉,避免交換造成效能浪費.</p>
+</blockquote>
+</li>
+<li><p>更新 apt </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install -y apt-transport-https ca-certificates curl</span><br></pre></td></tr></table></figure></li>
+<li><p>下載Google Cloud 公開簽名秘鑰</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg</span><br></pre></td></tr></table></figure></li>
+<li><p>添加Kubernetes apt</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main&quot;</span> | sudo tee /etc/apt/sources.list.d/kubernetes.list</span><br></pre></td></tr></table></figure></li>
+<li><p>更新 apt</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install -y kubelet kubeadm kubectl</span><br><span class="line">sudo apt-mark hold kubelet kubeadm kubectl</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="kubeadm-創建群集"><a href="#kubeadm-創建群集" class="headerlink" title="kubeadm 創建群集"></a>kubeadm 創建群集</h3><ul>
+<li><p>kubeadm 初始化</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#初始化</span></span><br><span class="line">kubeadm init --pod-network-cidr 10.244.0.0/16</span><br><span class="line"><span class="comment"># --apiserver-advertise-address: Api server 服務 IP</span></span><br><span class="line"><span class="comment"># --apiserver-bind-port: Api server 服務 port，預設 6443</span></span><br><span class="line"><span class="comment"># --pod-network-cidr: 分配 Pod IP 範圍 (CIDR)</span></span><br><span class="line"><span class="comment"># --kubernetes-version: 指定 Kubernetes 版本</span></span><br></pre></td></tr></table></figure></li>
+<li><p>運行成功訊息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Your Kubernetes control-plane has initialized successfully!</span><br><span class="line"></span><br><span class="line">To start using your cluster, you need to run the following as a regular user:</span><br><span class="line"></span><br><span class="line">  mkdir -p <span class="variable">$HOME</span>/.kube</span><br><span class="line">  sudo cp -i /etc/kubernetes/admin.conf <span class="variable">$HOME</span>/.kube/config</span><br><span class="line">  sudo chown $(id -u):$(id -g) <span class="variable">$HOME</span>/.kube/config</span><br><span class="line"></span><br><span class="line">You should now deploy a Pod network to the cluster.</span><br><span class="line">Run <span class="string">&quot;kubectl apply -f [podnetwork].yaml&quot;</span> with one of the options listed at:</span><br><span class="line">  /docs/concepts/cluster-administration/addons/</span><br><span class="line"></span><br><span class="line">You can now join any number of machines by running the following on each node</span><br><span class="line">as root:</span><br><span class="line"></span><br><span class="line">  kubeadm join &lt;control-plane-host&gt;:&lt;control-plane-port&gt; --token &lt;token&gt; --discovery-token-ca-cert-hash sha256:&lt;<span class="built_in">hash</span>&gt;</span><br><span class="line">  </span><br><span class="line"><span class="comment">## kubeadm join 資訊為加入節點需要,若沒紀錄可透過指令獲得</span></span><br></pre></td></tr></table></figure></li>
+<li><p>要使非root 用戶可以運行 kubectl,運行以下命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mkdir -p <span class="variable">$HOME</span>/.kube</span><br><span class="line">sudo cp -i /etc/kubernetes/admin.conf <span class="variable">$HOME</span>/.kube/config</span><br><span class="line">sudo chown $(id -u):$(id -g) <span class="variable">$HOME</span>/.kube/config</span><br></pre></td></tr></table></figure></li>
+<li><p>root 用戶則使用以下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> KUBECONFIG=/etc/kubernetes/admin.conf</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="使用-Lens-管理群集"><a href="#使用-Lens-管理群集" class="headerlink" title="使用 Lens 管理群集"></a>使用 Lens 管理群集</h3><ul>
+<li><p>Lens 網址</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">https://k8slens.dev/</span><br></pre></td></tr></table></figure></li>
+<li><p>Lens 加入管理群集</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#使用 Kubeconfig 加入群集</span></span><br><span class="line">cat /etc/kubernetes/admin.conf</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="kubernetes-網路插件"><a href="#kubernetes-網路插件" class="headerlink" title="kubernetes 網路插件"></a>kubernetes 網路插件</h3><ul>
+<li><p>目前大致有四種插件( Flannel 、 Calico 、 Weave 和 Canal ) ,這裡選擇較為簡易的 Flannel進行實作</p>
+</li>
+<li><p>安裝 Pod 網路附加組件</p>
+<ul>
+<li><p>Flannel</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#下載文件</span></span><br><span class="line">wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml</span><br><span class="line"><span class="comment">#將配置文件 kube-flannel.yaml 中的 net-conf.json.network 修改為 kubeadm init 時自定義的網段</span></span><br><span class="line"><span class="comment">#文件預設為 10.244.0.0/16 與上方 kubeadm init 時設定的 --pod-network-cidr 10.244.0.0/16 一致,可直接應用</span></span><br><span class="line">  net-conf.json: |</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;Network&quot;</span>: <span class="string">&quot;10.244.0.0/16&quot;</span>,</span><br><span class="line">      <span class="string">&quot;Backend&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;Type&quot;</span>: <span class="string">&quot;vxlan&quot;</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">#應用文件</span></span><br><span class="line">kubectl apply -f kube-flannel.yaml</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>比較參考文件</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://segmentfault.com/a/1190000018698263</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="kubernetes-節點加入"><a href="#kubernetes-節點加入" class="headerlink" title="kubernetes 節點加入"></a>kubernetes 節點加入</h3><ul>
+<li><p>將新的機器加入集群之前,需要在新機器上執行三個步驟 :</p>
+<ul>
+<li>安裝runtime ( docker )</li>
+<li>安裝kubeadm , kubelet 和 kubectl</li>
+<li>配置cgroup</li>
+</ul>
+</li>
+<li><p>在工作節點上執行初始化時給出的命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubeadm join &lt;control-plane-host&gt;:&lt;control-plane-port&gt; --token &lt;token&gt; --discovery-token-ca-cert-hash sha256:&lt;<span class="built_in">hash</span>&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>如果沒有令牌，可以通過在控制平面節點上運行以下命令來獲取令牌：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubeadm token list</span><br></pre></td></tr></table></figure></li>
+<li><p>默認情況下，令牌會在24小時後過期。如果要在當前令牌過期後將節點加入集群， 則可以通過在控制平面節點上運行以下命令來創建新令牌：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubeadm token create</span><br></pre></td></tr></table></figure></li>
+<li><p>如果沒有  –discovery-token-ca-cert-hash</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">openssl x509 -pubkey -<span class="keyword">in</span> /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2&gt;/dev/null | \</span><br><span class="line">   openssl dgst -sha256 -hex | sed <span class="string">&#x27;s/^.* //&#x27;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>節點加入成功輸出應類似於：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[preflight] Running pre-flight checks</span><br><span class="line"></span><br><span class="line">... (<span class="built_in">log</span> output of join workflow) ...</span><br><span class="line"></span><br><span class="line">Node join complete:</span><br><span class="line">* Certificate signing request sent to control-plane and response</span><br><span class="line">  received.</span><br><span class="line">* Kubelet informed of new secure connection details.</span><br><span class="line"></span><br><span class="line">Run <span class="string">&#x27;kubectl get nodes&#x27;</span> on control-plane to see this machine join.</span><br></pre></td></tr></table></figure></li>
+<li><p>在控制平面節點上執行以下指令獲得運行中的節點資訊：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl get nodes</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="kubernetes-持久卷（Persistent-Volume）-建立"><a href="#kubernetes-持久卷（Persistent-Volume）-建立" class="headerlink" title="kubernetes 持久卷（Persistent Volume） 建立"></a>kubernetes 持久卷（Persistent Volume） 建立</h3><ul>
+<li><p>採用 local-path</p>
+</li>
+<li><p>使用以下指令配置</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml</span><br></pre></td></tr></table></figure></li>
+<li><p>配置說明及來源網址</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">https://github.com/rancher/local-path-provisioner<span class="comment">#deployment</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="kubernetes-群集服務部屬"><a href="#kubernetes-群集服務部屬" class="headerlink" title="kubernetes 群集服務部屬"></a>kubernetes 群集服務部屬</h2><h3 id="kubernetes-群集監控建立"><a href="#kubernetes-群集監控建立" class="headerlink" title="kubernetes 群集監控建立"></a>kubernetes 群集監控建立</h3><blockquote>
+<p>使用 Prometheus Operator 搭建群集監控</p>
+</blockquote>
+<ul>
+<li><p>創建 namespace 用於安裝 Prometheus Operator</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl create namespace monitoring</span><br></pre></td></tr></table></figure></li>
+<li><p>拉取 Helm 安裝包</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">helm pull prometheus-community/kube-prometheus-stack</span><br></pre></td></tr></table></figure></li>
+<li><p>解壓縮</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tar -xvf kube-prometheus-stack-23.1.1.tgz</span><br></pre></td></tr></table></figure></li>
+<li><p>自定義參數於 values.yaml 中進行修改</p>
+<ul>
+<li><p>修改 admin 預設密碼</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#admin 預設密碼</span></span><br><span class="line"><span class="attr">adminPassword:</span> </span><br></pre></td></tr></table></figure></li>
+<li><p>修改時區</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">## Timezone for the default dashboards</span></span><br><span class="line"><span class="comment">## Other options are: browser or a specific timezone, i.e. Europe/Luxembourg</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="attr">defaultDashboardsTimezone:</span> <span class="string">utc</span></span><br></pre></td></tr></table></figure></li>
+<li><p>增加持久化儲存</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">## Prometheus StorageSpec for persistent data</span></span><br><span class="line"><span class="comment">## ref: https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/user-guides/storage.md</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="attr">storageSpec:</span> </span><br><span class="line"> <span class="attr">volumeClaimTemplate:</span></span><br><span class="line">   <span class="attr">spec:</span></span><br><span class="line">   	<span class="comment">#持久化儲存 ClassName 這邊使用前面建立的 local-path</span></span><br><span class="line">     <span class="attr">storageClassName:</span> <span class="string">local-path</span></span><br><span class="line">     <span class="attr">accessModes:</span> [<span class="string">&quot;ReadWriteOnce&quot;</span>]</span><br><span class="line">     <span class="attr">resources:</span></span><br><span class="line">       <span class="attr">requests:</span></span><br><span class="line">       	<span class="comment">#分配大小</span></span><br><span class="line">         <span class="attr">storage:</span> <span class="string">5Gi</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>安裝</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#使用 helm 安裝至準備好的 namespace 中</span></span><br><span class="line">helm install  homelab-monitoring . -n monitoring</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="kubernetes-Ingerss-建立"><a href="#kubernetes-Ingerss-建立" class="headerlink" title="kubernetes Ingerss 建立"></a>kubernetes Ingerss 建立</h3><ul>
+<li><p>安裝 traefik 作為 kubernetes Ingerss</p>
+<ul>
+<li><p>Helm 添加 traefik helm 倉庫</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">helm repo  add  traefik https://helm.traefik.io/traefik </span><br><span class="line">helm repo  update </span><br></pre></td></tr></table></figure></li>
+<li><p>下載 traefik </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">helm pull traefik/traefik</span><br></pre></td></tr></table></figure></li>
+<li><p>部屬 traefik </p>
+<ul>
+<li><p>使用自定義參數替換預設參數</p>
+<ul>
+<li><p>創建 namespace 用於安裝 traefik</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl create namespace traefik-ingress</span><br></pre></td></tr></table></figure></li>
+<li><p>建立文件 my-value.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">service:</span> </span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span>  </span><br><span class="line"><span class="attr">ingressRoute:</span> </span><br><span class="line">  <span class="attr">dashboard:</span> </span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">false</span> </span><br><span class="line"><span class="attr">ports:</span> </span><br><span class="line">  <span class="attr">traefik:</span> </span><br><span class="line">    <span class="attr">port:</span> <span class="number">9000</span> </span><br><span class="line">    <span class="attr">expose:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">nodePort:</span> <span class="number">31000</span> </span><br><span class="line">  <span class="attr">web:</span> </span><br><span class="line">    <span class="attr">port:</span> <span class="number">8000</span> </span><br><span class="line">    <span class="attr">expose:</span> <span class="literal">true</span> </span><br><span class="line">    <span class="attr">hostPort:</span> <span class="number">80</span> </span><br><span class="line">    <span class="comment"># 強制轉 HTTPS , 這邊使用 cloudflare 強制 https 所以進行註解</span></span><br><span class="line">    <span class="comment"># redirectTo: websecure</span></span><br><span class="line">  <span class="attr">websecure:</span> </span><br><span class="line">    <span class="attr">port:</span> <span class="number">8443</span> </span><br><span class="line">    <span class="attr">expose:</span> <span class="literal">true</span> </span><br><span class="line">    <span class="attr">hostPort:</span> <span class="number">443</span></span><br><span class="line">  <span class="attr">redis:</span> </span><br><span class="line">  	<span class="comment"># TCP 端口轉接</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">6379</span> </span><br><span class="line">    <span class="attr">containerPort:</span> <span class="number">6379</span> </span><br><span class="line">    <span class="attr">hostPort:</span> <span class="number">6379</span></span><br><span class="line"><span class="comment"># 永久卷設置    </span></span><br><span class="line"><span class="attr">persistence:</span> </span><br><span class="line">  <span class="attr">enabled:</span> <span class="literal">true</span> </span><br><span class="line">  <span class="attr">name:</span> <span class="string">data</span> </span><br><span class="line">  <span class="attr">accessMode:</span> <span class="string">ReadWriteOnce</span> </span><br><span class="line">  <span class="attr">size:</span> <span class="string">5G</span> </span><br><span class="line">  <span class="attr">storageClass:</span> <span class="string">&quot;local-path&quot;</span> </span><br><span class="line">  <span class="attr">path:</span> <span class="string">/data</span></span><br><span class="line"><span class="comment"># 額外參數設定</span></span><br><span class="line"><span class="attr">additionalArguments:</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;--entryPoints.redis.address=:6379&quot;</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;--serversTransport.insecureSkipVerify=true&quot;</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;--api.insecure=true&quot;</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;--api.dashboard=true&quot;</span></span><br><span class="line">  <span class="comment"># 使用插件獲取真實IP , 若不使用通過 cloudflare 僅會獲取 cloudflare 所給予之 IP</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;--experimental.plugins.traefik-real-ip.modulename=github.com/soulbalz/traefik-real-ip&quot;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;--experimental.plugins.traefik-real-ip.version=v1.0.3&quot;</span></span><br><span class="line"><span class="comment"># 插件參數設定  </span></span><br><span class="line"><span class="attr">pilot:</span></span><br><span class="line">  <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># 使用 pilot 插件需登入獲取 token</span></span><br><span class="line">  <span class="attr">token:</span> </span><br><span class="line">  <span class="attr">dashboard:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">experimental:</span></span><br><span class="line">  <span class="attr">plugins:</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">true</span>  </span><br></pre></td></tr></table></figure></li>
+<li><p>部屬 traefik 並套用 my-value.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">helm</span> <span class="string">install</span> <span class="string">traefik</span> <span class="string">-n</span> <span class="string">traefik-ingress</span> <span class="string">-f</span> <span class="string">my-value.yaml</span> <span class="string">.</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>kubernetes</category>
+      </categories>
+      <tags>
+        <tag>kubernetes</tag>
+      </tags>
+  </entry>
 </search>
