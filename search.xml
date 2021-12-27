@@ -715,4 +715,34 @@
         <tag>kubernetes</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Golang 套件筆記 godotenv</title>
+    <url>/2021/12/27/Golang-%E5%A5%97%E4%BB%B6%E7%AD%86%E8%A8%98-godotenv/</url>
+    <content><![CDATA[<h2 id="Golang-套件筆記"><a href="#Golang-套件筆記" class="headerlink" title="Golang 套件筆記"></a>Golang 套件筆記</h2><h3 id="環境變數套件-godotenv"><a href="#環境變數套件-godotenv" class="headerlink" title="環境變數套件 godotenv"></a>環境變數套件 godotenv</h3><blockquote>
+<p><a href="https://github.com/joho/godotenv">godotenv</a>從<code>.env</code>文件中讀取配置,然後存儲到程序的環境變量中</p>
+</blockquote>
+<span id="more"></span>
+<h3 id="安裝方法"><a href="#安裝方法" class="headerlink" title="安裝方法"></a>安裝方法</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">go get github.com/joho/godotenv</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><ul>
+<li><p>在專案跟目錄中新增<code>.env</code>檔案</p>
+<figure class="highlight tex"><table><tr><td class="code"><pre><span class="line">S3<span class="built_in">_</span>BUCKET=YOURS3BUCKET</span><br><span class="line">SECRET<span class="built_in">_</span>KEY=YOURSECRETKEYGOESHERE</span><br></pre></td></tr></table></figure></li>
+<li><p>在 GO 應用中使用手動加載</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;github.com/joho/godotenv&quot;</span></span><br><span class="line">    <span class="string">&quot;log&quot;</span></span><br><span class="line">    <span class="string">&quot;os&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="comment">//讀取 env 文件並將文件參數加入環境變數</span></span><br><span class="line">  err := godotenv.Load()</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatal(<span class="string">&quot;Error loading .env file&quot;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//使用 os.Getenv 取得環境變數值</span></span><br><span class="line">  s3Bucket := os.Getenv(<span class="string">&quot;S3_BUCKET&quot;</span>)</span><br><span class="line">  secretKey := os.Getenv(<span class="string">&quot;SECRET_KEY&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>在 GO 應用中使用自動加載</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    _ <span class="string">&quot;github.com/joho/godotenv&quot;</span></span><br><span class="line">    <span class="string">&quot;log&quot;</span></span><br><span class="line">    <span class="string">&quot;os&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="comment">//使用空導入,亦即在包名前加上&quot;_&quot;後會自動加載</span></span><br><span class="line">  <span class="comment">//直接使用 os.Getenv 取得環境變數值</span></span><br><span class="line">  s3Bucket := os.Getenv(<span class="string">&quot;S3_BUCKET&quot;</span>)</span><br><span class="line">  secretKey := os.Getenv(<span class="string">&quot;SECRET_KEY&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>不存入環境變量</p>
+<blockquote>
+<p><code>godotenv</code>允許不將<code>.env</code>文件內容加入環境變量,使用<code>godotenv.Read()</code>返回一個<code>map[string]string</code>,可直接使用</p>
+</blockquote>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">&quot;fmt&quot;</span></span><br><span class="line">  <span class="string">&quot;log&quot;</span></span><br><span class="line">  <span class="string">&quot;github.com/joho/godotenv&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="keyword">var</span> myEnv <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span></span><br><span class="line">  <span class="comment">// godotenv.Read()</span></span><br><span class="line">  myEnv, err := godotenv.Read()</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatal(err)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// use </span></span><br><span class="line">  fmt.Println(<span class="string">&quot;S3_BUCKET: &quot;</span>, myEnv[<span class="string">&quot;S3_BUCKET&quot;</span>])</span><br><span class="line">  fmt.Println(<span class="string">&quot;SECRET_KEY: &quot;</span>, myEnv[<span class="string">&quot;SECRET_KEY&quot;</span>])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+      <categories>
+        <category>GO</category>
+      </categories>
+      <tags>
+        <tag>GO</tag>
+      </tags>
+  </entry>
 </search>

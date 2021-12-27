@@ -20,20 +20,20 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Telegraf安裝">
+  <meta name="description" content="Golang 套件筆記環境變數套件 godotenv godotenv從.env文件中讀取配置,然後存儲到程序的環境變量中">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Telegraf安裝">
-<meta property="og:url" content="http://example.com/2021/12/15/Telegraf%E5%AE%89%E8%A3%9D/index.html">
+<meta property="og:title" content="Golang 套件筆記 godotenv">
+<meta property="og:url" content="http://example.com/2021/12/27/Golang-%E5%A5%97%E4%BB%B6%E7%AD%86%E8%A8%98-godotenv/index.html">
 <meta property="og:site_name" content="re-forest 的部落格">
-<meta property="og:description" content="Telegraf安裝">
+<meta property="og:description" content="Golang 套件筆記環境變數套件 godotenv godotenv從.env文件中讀取配置,然後存儲到程序的環境變量中">
 <meta property="og:locale" content="zh_TW">
-<meta property="article:published_time" content="2021-12-15T07:23:00.000Z">
-<meta property="article:modified_time" content="2021-12-15T07:50:24.932Z">
+<meta property="article:published_time" content="2021-12-27T15:53:00.000Z">
+<meta property="article:modified_time" content="2021-12-27T15:54:51.510Z">
 <meta property="article:author" content="re-forest">
-<meta property="article:tag" content="telegraf">
+<meta property="article:tag" content="GO">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/2021/12/15/Telegraf%E5%AE%89%E8%A3%9D/">
+<link rel="canonical" href="http://example.com/2021/12/27/Golang-%E5%A5%97%E4%BB%B6%E7%AD%86%E8%A8%98-godotenv/">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>Telegraf安裝 | re-forest 的部落格</title>
+  <title>Golang 套件筆記 godotenv | re-forest 的部落格</title>
   
 
 
@@ -190,7 +190,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/12/15/Telegraf%E5%AE%89%E8%A3%9D/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/12/27/Golang-%E5%A5%97%E4%BB%B6%E7%AD%86%E8%A8%98-godotenv/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/1123.jpg">
@@ -203,7 +203,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Telegraf安裝
+          Golang 套件筆記 godotenv
         </h1>
 
         <div class="post-meta">
@@ -214,7 +214,7 @@
               <span class="post-meta-item-text">發表於</span>
               
 
-              <time title="創建時間：2021-12-15 15:23:00 / 修改時間：15:50:24" itemprop="dateCreated datePublished" datetime="2021-12-15T15:23:00+08:00">2021-12-15</time>
+              <time title="創建時間：2021-12-27 23:53:00 / 修改時間：23:54:51" itemprop="dateCreated datePublished" datetime="2021-12-27T23:53:00+08:00">2021-12-27</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -222,7 +222,7 @@
               </span>
               <span class="post-meta-item-text">分類於</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+                  <a href="/categories/GO/" itemprop="url" rel="index"><span itemprop="name">GO</span></a>
                 </span>
             </span>
 
@@ -237,14 +237,26 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="Telegraf安裝"><a href="#Telegraf安裝" class="headerlink" title="Telegraf安裝"></a>Telegraf安裝</h2><span id="more"></span>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##</span></span><br><span class="line">wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -</span><br><span class="line"></span><br><span class="line"><span class="built_in">source</span> /etc/lsb-release</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;deb https://repos.influxdata.com/<span class="variable">$&#123;DISTRIB_ID,,&#125;</span> <span class="variable">$&#123;DISTRIB_CODENAME&#125;</span> stable&quot;</span> | sudo tee /etc/apt/sources.list.d/influxdb.list</span><br><span class="line"><span class="comment">##</span></span><br><span class="line">sudo apt-get update &amp;&amp; sudo apt-get install apt-transport-https</span><br><span class="line"></span><br><span class="line">wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -</span><br><span class="line"></span><br><span class="line"><span class="built_in">source</span> /etc/os-release</span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="built_in">test</span> <span class="variable">$VERSION_ID</span> = <span class="string">&quot;7&quot;</span> &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;deb https://repos.influxdata.com/debian wheezy stable&quot;</span> | sudo tee /etc/apt/sources.list.d/influxdb.list</span><br><span class="line"><span class="built_in">test</span> <span class="variable">$VERSION_ID</span> = <span class="string">&quot;8&quot;</span> &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;deb https://repos.influxdata.com/debian jessie stable&quot;</span> | sudo tee /etc/apt/sources.list.d/influxdb.list</span><br><span class="line"><span class="built_in">test</span> <span class="variable">$VERSION_ID</span> = <span class="string">&quot;9&quot;</span> &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;deb https://repos.influxdata.com/debian stretch stable&quot;</span> | sudo tee /etc/apt/sources.list.d/influxdb.list</span><br><span class="line"><span class="built_in">test</span> <span class="variable">$VERSION_ID</span> = <span class="string">&quot;10&quot;</span> &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;deb https://repos.influxdata.com/debian buster stable&quot;</span> | sudo tee /etc/apt/sources.list.d/influxdb.list</span><br><span class="line"><span class="comment">##</span></span><br><span class="line">sudo apt-get update &amp;&amp; sudo apt-get install telegraf</span><br><span class="line"></span><br><span class="line">sudo service telegraf start</span><br></pre></td></tr></table></figure>
+        <h2 id="Golang-套件筆記"><a href="#Golang-套件筆記" class="headerlink" title="Golang 套件筆記"></a>Golang 套件筆記</h2><h3 id="環境變數套件-godotenv"><a href="#環境變數套件-godotenv" class="headerlink" title="環境變數套件 godotenv"></a>環境變數套件 godotenv</h3><blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/joho/godotenv">godotenv</a>從<code>.env</code>文件中讀取配置,然後存儲到程序的環境變量中</p>
+</blockquote>
+<span id="more"></span>
+<h3 id="安裝方法"><a href="#安裝方法" class="headerlink" title="安裝方法"></a>安裝方法</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get github.com/joho/godotenv</span><br></pre></td></tr></table></figure>
 
-<h2 id="產生-config-設定檔案"><a href="#產生-config-設定檔案" class="headerlink" title="產生 config 設定檔案"></a>產生 config 設定檔案</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># telegraf 命令</span></span><br><span class="line">telegraf config &gt; telegraf.conf</span><br><span class="line"><span class="comment"># 產生文件目錄</span></span><br><span class="line">/etc/telegraf/telegraf.conf</span><br></pre></td></tr></table></figure>
+<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><ul>
+<li><p>在專案跟目錄中新增<code>.env</code>檔案</p>
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">S3<span class="built_in">_</span>BUCKET=YOURS3BUCKET</span><br><span class="line">SECRET<span class="built_in">_</span>KEY=YOURSECRETKEYGOESHERE</span><br></pre></td></tr></table></figure></li>
+<li><p>在 GO 應用中使用手動加載</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;github.com/joho/godotenv&quot;</span></span><br><span class="line">    <span class="string">&quot;log&quot;</span></span><br><span class="line">    <span class="string">&quot;os&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="comment">//讀取 env 文件並將文件參數加入環境變數</span></span><br><span class="line">  err := godotenv.Load()</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatal(<span class="string">&quot;Error loading .env file&quot;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//使用 os.Getenv 取得環境變數值</span></span><br><span class="line">  s3Bucket := os.Getenv(<span class="string">&quot;S3_BUCKET&quot;</span>)</span><br><span class="line">  secretKey := os.Getenv(<span class="string">&quot;SECRET_KEY&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>在 GO 應用中使用自動加載</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    _ <span class="string">&quot;github.com/joho/godotenv&quot;</span></span><br><span class="line">    <span class="string">&quot;log&quot;</span></span><br><span class="line">    <span class="string">&quot;os&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="comment">//使用空導入,亦即在包名前加上&quot;_&quot;後會自動加載</span></span><br><span class="line">  <span class="comment">//直接使用 os.Getenv 取得環境變數值</span></span><br><span class="line">  s3Bucket := os.Getenv(<span class="string">&quot;S3_BUCKET&quot;</span>)</span><br><span class="line">  secretKey := os.Getenv(<span class="string">&quot;SECRET_KEY&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>不存入環境變量</p>
+<blockquote>
+<p><code>godotenv</code>允許不將<code>.env</code>文件內容加入環境變量,使用<code>godotenv.Read()</code>返回一個<code>map[string]string</code>,可直接使用</p>
+</blockquote>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">&quot;fmt&quot;</span></span><br><span class="line">  <span class="string">&quot;log&quot;</span></span><br><span class="line">  <span class="string">&quot;github.com/joho/godotenv&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="keyword">var</span> myEnv <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span></span><br><span class="line">  <span class="comment">// godotenv.Read()</span></span><br><span class="line">  myEnv, err := godotenv.Read()</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatal(err)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// use </span></span><br><span class="line">  fmt.Println(<span class="string">&quot;S3_BUCKET: &quot;</span>, myEnv[<span class="string">&quot;S3_BUCKET&quot;</span>])</span><br><span class="line">  fmt.Println(<span class="string">&quot;SECRET_KEY: &quot;</span>, myEnv[<span class="string">&quot;SECRET_KEY&quot;</span>])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
 
-<h2 id="telegraf-conf設定"><a href="#telegraf-conf設定" class="headerlink" title="telegraf.conf設定"></a>telegraf.conf設定</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># indluxdb 位址</span></span><br><span class="line"><span class="string">urls</span> <span class="string">=</span> [<span class="string">&quot;&lt; your domain &gt;&quot;</span>]</span><br><span class="line"><span class="comment"># db 名稱</span></span><br><span class="line"><span class="string">database</span> <span class="string">=</span> <span class="string">&quot;telegraf&quot;</span></span><br><span class="line"><span class="comment"># 抓取網路狀態資料</span></span><br><span class="line">[[<span class="string">inputs.net</span>]]</span><br></pre></td></tr></table></figure>
-
-<h2 id="重新啟動服務"><a href="#重新啟動服務" class="headerlink" title="重新啟動服務"></a>重新啟動服務</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service telegraf restart</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -253,7 +265,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/telegraf/" rel="tag"># telegraf</a>
+              <a href="/tags/GO/" rel="tag"># GO</a>
           </div>
 
         
@@ -262,13 +274,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/12/15/iPerf3-%E7%B6%B2%E8%B7%AF%E9%80%9F%E5%BA%A6%E6%B8%AC%E8%A9%A6%E5%B7%A5%E5%85%B7/" rel="prev" title="iPerf3  網路速度測試工具">
-      <i class="fa fa-chevron-left"></i> iPerf3  網路速度測試工具
+    <a href="/2021/12/17/AWS-EC2-%E5%9F%B7%E8%A1%8C%E5%80%8B%E9%AB%94%E6%9C%AC%E5%9C%B0%E9%83%A8%E5%B1%AC/" rel="prev" title="AWS EC2 執行個體本地部署">
+      <i class="fa fa-chevron-left"></i> AWS EC2 執行個體本地部署
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2021/12/15/kubernetes%E6%9C%AC%E5%9C%B0%E5%AE%89%E8%A3%9D%E5%88%B0%E6%9C%8D%E5%8B%99%E5%BB%BA%E7%AB%8B/" rel="next" title="kubernetes本地安裝到服務建立">
-      kubernetes本地安裝到服務建立 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -327,7 +336,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Telegraf%E5%AE%89%E8%A3%9D"><span class="nav-number">1.</span> <span class="nav-text">Telegraf安裝</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A2%E7%94%9F-config-%E8%A8%AD%E5%AE%9A%E6%AA%94%E6%A1%88"><span class="nav-number">2.</span> <span class="nav-text">產生 config 設定檔案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#telegraf-conf%E8%A8%AD%E5%AE%9A"><span class="nav-number">3.</span> <span class="nav-text">telegraf.conf設定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E6%96%B0%E5%95%9F%E5%8B%95%E6%9C%8D%E5%8B%99"><span class="nav-number">4.</span> <span class="nav-text">重新啟動服務</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Golang-%E5%A5%97%E4%BB%B6%E7%AD%86%E8%A8%98"><span class="nav-number">1.</span> <span class="nav-text">Golang 套件筆記</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%92%B0%E5%A2%83%E8%AE%8A%E6%95%B8%E5%A5%97%E4%BB%B6-godotenv"><span class="nav-number">1.1.</span> <span class="nav-text">環境變數套件 godotenv</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%9D%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">安裝方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">使用方法</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
