@@ -347,6 +347,79 @@
       </tags>
   </entry>
   <entry>
+    <title>PrometheusOperator</title>
+    <url>/2022/01/07/PrometheusOperator/</url>
+    <content><![CDATA[<h1 id="kubernetes-監控"><a href="#kubernetes-監控" class="headerlink" title="kubernetes 監控"></a>kubernetes 監控</h1><blockquote>
+<p>使用 Prometheus Operator 監控 kubernetes </p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="創建-namespace-用於安裝-Prometheus-Operator"><a href="#創建-namespace-用於安裝-Prometheus-Operator" class="headerlink" title="創建 namespace 用於安裝 Prometheus Operator"></a>創建 namespace 用於安裝 Prometheus Operator</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl create namespace monitoring</span><br></pre></td></tr></table></figure>
+
+<h2 id="拉取-Helm-安裝包"><a href="#拉取-Helm-安裝包" class="headerlink" title="拉取 Helm 安裝包"></a>拉取 Helm 安裝包</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">helm pull prometheus-community/kube-prometheus-stack</span><br></pre></td></tr></table></figure>
+
+<h2 id="解壓縮"><a href="#解壓縮" class="headerlink" title="解壓縮"></a>解壓縮</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tar -xvf kube-prometheus-stack-23.1.1.tgz</span><br></pre></td></tr></table></figure>
+
+<h2 id="設定-kubernetes"><a href="#設定-kubernetes" class="headerlink" title="設定 kubernetes"></a>設定 kubernetes</h2><blockquote>
+<p>kubernetes 部分設定需進行修改 , Prometheus Targets 才能正常運作</p>
+</blockquote>
+<h3 id="設定-controller-manager"><a href="#設定-controller-manager" class="headerlink" title="設定 controller-manager"></a>設定 controller-manager</h3><ul>
+<li><p>編輯 /etc/kubernetes/manifests/kube-controller-manager.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#修改預設綁定 IP , 原預設為 127.0.0.1 ,需修改為 0.0.0.0 才能供外部取得資料</span></span><br><span class="line"><span class="string">--bind-address=0.0.0.0</span></span><br></pre></td></tr></table></figure></li>
+<li><p>重啟 kubelet</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">service kubelet restart</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="設定-scheduler"><a href="#設定-scheduler" class="headerlink" title="設定 scheduler"></a>設定 scheduler</h3><ul>
+<li><p>編輯 /etc/kubernetes/manifests/kube-scheduler.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#修改預設綁定 IP , 原預設為 127.0.0.1 ,需修改為 0.0.0.0 才能供外部取得資料</span></span><br><span class="line"><span class="string">--bind-address=0.0.0.0</span></span><br></pre></td></tr></table></figure></li>
+<li><p>重啟 kubelet</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">service kubelet restart</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="設定-kube-proxy"><a href="#設定-kube-proxy" class="headerlink" title="設定 kube-proxy"></a>設定 kube-proxy</h3><ul>
+<li><p>訪問 kube-proxy 的 metrics 沒有任何安全憑證</p>
+</li>
+<li><p>編輯 kube-proxy 設定</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#修改預設綁定 IP , metricsBindAddress 原欲設為空 , 會自動綁定127.0.0.1 , 需修改為 0.0.0.0 才能供外部取得資料</span></span><br><span class="line"><span class="comment">#開啟編輯</span></span><br><span class="line"><span class="string">kubectl</span>  <span class="string">-n</span> <span class="string">kube-system</span> <span class="string">edit</span> <span class="string">cm</span> <span class="string">kube-proxy</span></span><br><span class="line"><span class="comment">#修改設定</span></span><br><span class="line"><span class="attr">metricsBindAddress:</span> <span class="string">&quot;0.0.0.0&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>重新加載設定</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl -n kube-system rollout restart ds kube-proxy </span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="設定-etcd"><a href="#設定-etcd" class="headerlink" title="設定 etcd"></a>設定 etcd</h3><ul>
+<li><p>自簽發一個 client 證書以訪問 etcd</p>
+</li>
+<li><p>使用 docker 產生自簽憑證</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 複製 etcd 至 tmp 資料夾方便進行映射</span></span><br><span class="line"><span class="string">cp</span> <span class="string">-r</span> <span class="string">/etc/kubernetes/pki/etcd/</span> <span class="string">/tmp</span></span><br><span class="line"><span class="comment"># 使用 docker 運行一個 linux 容器 並將 etcd 映射進容器內</span></span><br><span class="line"><span class="string">docker</span> <span class="string">run</span> <span class="string">--rm</span> <span class="string">-it</span> <span class="string">--net=host</span> <span class="string">-v</span> <span class="string">/tmp/etcd/:/etcd</span> <span class="string">rockylinux/rockylinux</span>  <span class="string">/bin/bash</span></span><br><span class="line"><span class="comment"># 再容器安裝 openssl 並產生憑證</span></span><br><span class="line"><span class="string">yum</span> <span class="string">install</span> <span class="string">openssl</span></span><br><span class="line"><span class="string">cd</span> <span class="string">/etcd</span></span><br><span class="line"><span class="string">openssl</span> <span class="string">genrsa</span> <span class="string">-out</span> <span class="string">client.key</span> <span class="number">4096</span></span><br><span class="line"><span class="string">openssl</span> <span class="string">req</span> <span class="string">-new</span> <span class="string">-key</span> <span class="string">client.key</span> <span class="string">-out</span> <span class="string">client.csr</span> <span class="string">-subj</span> <span class="string">&quot;/CN=client&quot;</span></span><br><span class="line"><span class="string">openssl</span> <span class="string">x509</span> <span class="string">-req</span> <span class="string">-days</span> <span class="number">3650</span> <span class="string">-in</span> <span class="string">client.csr</span> <span class="string">-CA</span> <span class="string">ca.crt</span> <span class="string">-CAkey</span> <span class="string">ca.key</span> <span class="string">-CAcreateserial</span> <span class="string">-out</span> <span class="string">client.crt</span></span><br></pre></td></tr></table></figure></li>
+<li><p>驗證憑證</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl --cacert /tmp/etcd/ca.crt --cert /tmp/etcd/client.crt  --key /tmp/etcd/client.key -s  https://&lt;your master ip&gt;:2379/metrics |less</span><br></pre></td></tr></table></figure></li>
+<li><p>創建 secret</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 將產生的憑證儲存至 secret 中</span></span><br><span class="line"><span class="built_in">cd</span> /tmp/etcd</span><br><span class="line">kubectl -n monitoring create secret generic \</span><br><span class="line">  kube-etcd-client-certs \</span><br><span class="line">  --from-file=etcd-client-ca.crt=ca.crt \</span><br><span class="line">  --from-file=etcd-client.crt=client.crt \</span><br><span class="line">  --from-file=etcd-client.key=client.key</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="自定義參數於-values-yaml-中進行修改"><a href="#自定義參數於-values-yaml-中進行修改" class="headerlink" title="自定義參數於 values.yaml 中進行修改"></a>自定義參數於 values.yaml 中進行修改</h2><h3 id="修改-admin-預設密碼"><a href="#修改-admin-預設密碼" class="headerlink" title="修改 admin 預設密碼"></a>修改 admin 預設密碼</h3><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#admin 預設密碼</span></span><br><span class="line"><span class="attr">adminPassword:</span> </span><br></pre></td></tr></table></figure>
+
+<h3 id="修改時區"><a href="#修改時區" class="headerlink" title="修改時區"></a>修改時區</h3><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">## Timezone for the default dashboards</span></span><br><span class="line"><span class="comment">## Other options are: browser or a specific timezone, i.e. Europe/Luxembourg</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="attr">defaultDashboardsTimezone:</span> <span class="string">utc</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="修改-kubeControllerManager"><a href="#修改-kubeControllerManager" class="headerlink" title="修改 kubeControllerManager"></a>修改 kubeControllerManager</h3><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">kubeControllerManager:</span></span><br><span class="line"><span class="comment"># 新版本 kubeControllerManager 採用 10257 https 通訊端口</span></span><br><span class="line">  <span class="attr">service:</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">10257</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">10257</span></span><br><span class="line">  <span class="attr">serviceMonitor:</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">https:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">insecureSkipVerify:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="修改-kubeScheduler"><a href="#修改-kubeScheduler" class="headerlink" title="修改 kubeScheduler"></a>修改 kubeScheduler</h3><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">kubeScheduler:</span></span><br><span class="line"><span class="comment"># kubeScheduler http 10251 端口已棄用 ,現行採用 10259 https 端口</span></span><br><span class="line">  <span class="attr">service:</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">10259</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">10259</span></span><br><span class="line">  <span class="attr">serviceMonitor:</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">https:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">insecureSkipVerify:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="修改-kubeEtcd"><a href="#修改-kubeEtcd" class="headerlink" title="修改 kubeEtcd"></a>修改 kubeEtcd</h3><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">kubeEtcd:</span></span><br><span class="line">  <span class="attr">serviceMonitor:</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">scheme:</span> <span class="string">https</span></span><br><span class="line">    <span class="attr">caFile:</span> <span class="string">&quot;/etc/prometheus/secrets/etcd-client-cert/etcd-client-ca.crt&quot;</span></span><br><span class="line">    <span class="attr">certFile:</span> <span class="string">&quot;/etc/prometheus/secrets/etcd-client-cert/etcd-client.crt&quot;</span></span><br><span class="line">    <span class="attr">keyFile:</span> <span class="string">&quot;/etc/prometheus/secrets/etcd-client-cert/etcd-client.key&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="修改-prometheus"><a href="#修改-prometheus" class="headerlink" title="修改 prometheus"></a>修改 prometheus</h3><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">prometheus:</span></span><br><span class="line">  <span class="attr">prometheusSpec:</span></span><br><span class="line">  <span class="comment"># 掛載 etcd-client-cert 用於訪問 etcd</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">etcd-client-cert</span></span><br><span class="line">      <span class="attr">secret:</span></span><br><span class="line">        <span class="attr">defaultMode:</span> <span class="number">420</span></span><br><span class="line">        <span class="attr">secretName:</span> <span class="string">kube-etcd-client-certs</span></span><br><span class="line">    <span class="attr">volumeMounts:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">mountPath:</span> <span class="string">/etc/prometheus/secrets/etcd-client-cert</span></span><br><span class="line">        <span class="attr">name:</span> <span class="string">etcd-client-cert</span></span><br><span class="line">        <span class="attr">readOnly:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="設定資料保存天數"><a href="#設定資料保存天數" class="headerlink" title="設定資料保存天數"></a>設定資料保存天數</h3><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">prometheus:</span></span><br><span class="line">  <span class="attr">prometheusSpec:</span></span><br><span class="line">  	<span class="comment"># 設定資料保存天數 10天</span></span><br><span class="line">	<span class="attr">retention:</span> <span class="string">10d</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="增加持久化儲存"><a href="#增加持久化儲存" class="headerlink" title="增加持久化儲存"></a>增加持久化儲存</h3><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">prometheus:</span></span><br><span class="line">  <span class="attr">prometheusSpec:</span></span><br><span class="line">    <span class="attr">storageSpec:</span> </span><br><span class="line">     <span class="attr">volumeClaimTemplate:</span></span><br><span class="line">       <span class="attr">spec:</span></span><br><span class="line">       	<span class="comment">#持久化儲存 ClassName 這邊使用前面建立的 local-path</span></span><br><span class="line">         <span class="attr">storageClassName:</span> <span class="string">local-path</span></span><br><span class="line">         <span class="attr">accessModes:</span> [<span class="string">&quot;ReadWriteOnce&quot;</span>]</span><br><span class="line">         <span class="attr">resources:</span></span><br><span class="line">           <span class="attr">requests:</span></span><br><span class="line">           	<span class="comment">#分配大小</span></span><br><span class="line">             <span class="attr">storage:</span> <span class="string">5Gi</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="安裝"><a href="#安裝" class="headerlink" title="安裝"></a>安裝</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#使用 helm 安裝至準備好的 namespace 中</span></span><br><span class="line">helm install  homelab-monitoring . -n monitoring</span><br></pre></td></tr></table></figure>
+
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3>]]></content>
+      <categories>
+        <category>kubernetes</category>
+      </categories>
+      <tags>
+        <tag>Prometheus</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Telegraf安裝</title>
     <url>/2021/12/15/Telegraf%E5%AE%89%E8%A3%9D/</url>
     <content><![CDATA[<h2 id="Telegraf安裝"><a href="#Telegraf安裝" class="headerlink" title="Telegraf安裝"></a>Telegraf安裝</h2><span id="more"></span>
