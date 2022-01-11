@@ -438,6 +438,85 @@
       </tags>
   </entry>
   <entry>
+    <title>iPerf3  網路速度測試工具</title>
+    <url>/2021/12/15/iPerf3-%E7%B6%B2%E8%B7%AF%E9%80%9F%E5%BA%A6%E6%B8%AC%E8%A9%A6%E5%B7%A5%E5%85%B7/</url>
+    <content><![CDATA[<h2 id="iPerf3-網路速度測試工具"><a href="#iPerf3-網路速度測試工具" class="headerlink" title="iPerf3  網路速度測試工具"></a>iPerf3  網路速度測試工具</h2><h4 id="支援平台"><a href="#支援平台" class="headerlink" title="支援平台"></a>支援平台</h4><ul>
+<li><p>Windows、Mac OS X、Linux、FreeBSD</p>
+<span id="more"></span>
+<h4 id="支援傳輸協定"><a href="#支援傳輸協定" class="headerlink" title="支援傳輸協定"></a>支援傳輸協定</h4></li>
+<li><p>TCP、UDP、SCTP </p>
+</li>
+</ul>
+<h4 id="支援網路位址"><a href="#支援網路位址" class="headerlink" title="支援網路位址"></a>支援網路位址</h4><ul>
+<li>IPv4、IPv6 </li>
+</ul>
+<h4 id="Win10安裝方法"><a href="#Win10安裝方法" class="headerlink" title="Win10安裝方法"></a>Win10安裝方法</h4><ul>
+<li><a href="https://iperf.fr/iperf-download.php">官方網站下載安裝</a></li>
+</ul>
+<h4 id="Debian-Ubuntu-Linux-安裝方式"><a href="#Debian-Ubuntu-Linux-安裝方式" class="headerlink" title="Debian/Ubuntu Linux 安裝方式"></a>Debian/Ubuntu Linux 安裝方式</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install iperf3</span><br></pre></td></tr></table></figure>
+
+<h4 id="測試網路頻寬"><a href="#測試網路頻寬" class="headerlink" title="測試網路頻寬"></a>測試網路頻寬</h4><ul>
+<li><p>一般在使用 iPerf3 測試時，要同時在 server 端與 client 端都各執行一個 iPerf3 程式，讓它們互相傳送資料進行測試，首先啟動 server 端的 <code>iperf3</code>：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Server 端</span></span><br><span class="line">iperf3 -s</span><br></pre></td></tr></table></figure></li>
+<li><p>client 端執行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Client 端</span></span><br><span class="line">iperf3 -c SERVER_IP</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="iPerf3-進階指令"><a href="#iPerf3-進階指令" class="headerlink" title="iPerf3 進階指令"></a>iPerf3 進階指令</h4><ul>
+<li><h3 id="測試時間"><a href="#測試時間" class="headerlink" title="測試時間"></a>測試時間</h3><ul>
+<li><p><code>-t</code> 參數可以指定傳輸測試的持續時間，而 <code>-i</code> 可以指定輸出數據的間隔時間：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 測試 20 秒，每隔 4 秒輸出測試數據</span></span><br><span class="line">iperf3 -c SERVER_IP -t 20 -i 4</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="儲存測試結果"><a href="#儲存測試結果" class="headerlink" title="儲存測試結果"></a>儲存測試結果</h3><ul>
+<li><p><code>--logfile</code> 參數可以將輸出的測試結果報表或是錯誤訊息儲存至檔案中：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 將輸出訊息儲存至 output.txt 檔案中</span></span><br><span class="line">iperf3 -c SERVER_IP --logfile output.txt</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="指定連接埠"><a href="#指定連接埠" class="headerlink" title="指定連接埠"></a>指定連接埠</h3><ul>
+<li><p>iPerf3 預設會使用的連接埠（port）是 <code>5201</code>，若要自行指定連接埠，可以使用 <code>-p</code> 參數：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 12345 這個連接埠的 server</span></span><br><span class="line">iperf3 -s -p 12345</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 12345 這個連接埠的 client</span></span><br><span class="line">iperf3 -c SERVER_IP -p 12345</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="JSON-格式輸出"><a href="#JSON-格式輸出" class="headerlink" title="JSON 格式輸出"></a>JSON 格式輸出</h3><ul>
+<li><p>若要使用程式讀取 iPerf3 的測試結果，可將輸出格式改為 JSON 會更方便。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 JSON 格式輸出</span></span><br><span class="line">iperf3 -c SERVER_IP -J</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="多線連接"><a href="#多線連接" class="headerlink" title="多線連接"></a>多線連接</h3><ul>
+<li><p><code>-P</code> 參數可以指定同時使用幾條連線進行測試：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 同時使用 2 條連線測試</span></span><br><span class="line">iperf3 -c SERVER_IP -P 2</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="UDP-傳輸協定"><a href="#UDP-傳輸協定" class="headerlink" title="UDP 傳輸協定"></a>UDP 傳輸協定</h3><ul>
+<li><p>若要測試 UDP 傳輸協定的效能，可以使用 <code>-u</code> 參數：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 UDP 傳輸協定</span></span><br><span class="line">iperf3 -c SERVER_IP -u</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="反向傳輸-上傳"><a href="#反向傳輸-上傳" class="headerlink" title="反向傳輸(上傳)"></a>反向傳輸(上傳)</h3><ul>
+<li><p>iPerf3 預設會測試上傳的速度（由 client 傳送資料，而 server 負責接收）若要測試下載的速度（由 server 傳送資料，而 client 負責接收），則可以使用 <code>-R</code> 參數：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 測試反向傳輸（下載）</span></span><br><span class="line">iperf3 -c SERVER_IP -R</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="IPv4-與-IPv6"><a href="#IPv4-與-IPv6" class="headerlink" title="IPv4 與 IPv6"></a>IPv4 與 IPv6</h3><ul>
+<li><p><code>-4</code> 與 <code>-6</code> 可以指定只使用 IPv4 或 IPv6：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 只使用 IPv4</span></span><br><span class="line">iperf3 -c SERVER_IP -4</span><br><span class="line"></span><br><span class="line"><span class="comment"># 只使用 IPv6</span></span><br><span class="line">iperf3 -c SERVER_IP -6</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="自訂傳送檔案"><a href="#自訂傳送檔案" class="headerlink" title="自訂傳送檔案"></a>自訂傳送檔案</h3><ul>
+<li><p>我們可以使用 <code>-f</code> 自訂用來測試傳送的檔案：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 YOUR_FILE 這個檔案來測試傳送速度</span></span><br><span class="line">iperf3 -c SERVER_IP -F YOUR_FILE</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>iperf3</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Traefik 2.5 使用</title>
     <url>/2021/12/15/Traefik-2-5-%E4%BD%BF%E7%94%A8/</url>
     <content><![CDATA[<h2 id="Traefik-使用"><a href="#Traefik-使用" class="headerlink" title="Traefik 使用"></a>Traefik 使用</h2><h3 id="網頁部屬"><a href="#網頁部屬" class="headerlink" title="網頁部屬"></a>網頁部屬</h3><blockquote>
@@ -565,85 +644,6 @@
       </categories>
       <tags>
         <tag>Traefik</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>iPerf3  網路速度測試工具</title>
-    <url>/2021/12/15/iPerf3-%E7%B6%B2%E8%B7%AF%E9%80%9F%E5%BA%A6%E6%B8%AC%E8%A9%A6%E5%B7%A5%E5%85%B7/</url>
-    <content><![CDATA[<h2 id="iPerf3-網路速度測試工具"><a href="#iPerf3-網路速度測試工具" class="headerlink" title="iPerf3  網路速度測試工具"></a>iPerf3  網路速度測試工具</h2><h4 id="支援平台"><a href="#支援平台" class="headerlink" title="支援平台"></a>支援平台</h4><ul>
-<li><p>Windows、Mac OS X、Linux、FreeBSD</p>
-<span id="more"></span>
-<h4 id="支援傳輸協定"><a href="#支援傳輸協定" class="headerlink" title="支援傳輸協定"></a>支援傳輸協定</h4></li>
-<li><p>TCP、UDP、SCTP </p>
-</li>
-</ul>
-<h4 id="支援網路位址"><a href="#支援網路位址" class="headerlink" title="支援網路位址"></a>支援網路位址</h4><ul>
-<li>IPv4、IPv6 </li>
-</ul>
-<h4 id="Win10安裝方法"><a href="#Win10安裝方法" class="headerlink" title="Win10安裝方法"></a>Win10安裝方法</h4><ul>
-<li><a href="https://iperf.fr/iperf-download.php">官方網站下載安裝</a></li>
-</ul>
-<h4 id="Debian-Ubuntu-Linux-安裝方式"><a href="#Debian-Ubuntu-Linux-安裝方式" class="headerlink" title="Debian/Ubuntu Linux 安裝方式"></a>Debian/Ubuntu Linux 安裝方式</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install iperf3</span><br></pre></td></tr></table></figure>
-
-<h4 id="測試網路頻寬"><a href="#測試網路頻寬" class="headerlink" title="測試網路頻寬"></a>測試網路頻寬</h4><ul>
-<li><p>一般在使用 iPerf3 測試時，要同時在 server 端與 client 端都各執行一個 iPerf3 程式，讓它們互相傳送資料進行測試，首先啟動 server 端的 <code>iperf3</code>：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Server 端</span></span><br><span class="line">iperf3 -s</span><br></pre></td></tr></table></figure></li>
-<li><p>client 端執行：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Client 端</span></span><br><span class="line">iperf3 -c SERVER_IP</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h4 id="iPerf3-進階指令"><a href="#iPerf3-進階指令" class="headerlink" title="iPerf3 進階指令"></a>iPerf3 進階指令</h4><ul>
-<li><h3 id="測試時間"><a href="#測試時間" class="headerlink" title="測試時間"></a>測試時間</h3><ul>
-<li><p><code>-t</code> 參數可以指定傳輸測試的持續時間，而 <code>-i</code> 可以指定輸出數據的間隔時間：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 測試 20 秒，每隔 4 秒輸出測試數據</span></span><br><span class="line">iperf3 -c SERVER_IP -t 20 -i 4</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><h3 id="儲存測試結果"><a href="#儲存測試結果" class="headerlink" title="儲存測試結果"></a>儲存測試結果</h3><ul>
-<li><p><code>--logfile</code> 參數可以將輸出的測試結果報表或是錯誤訊息儲存至檔案中：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 將輸出訊息儲存至 output.txt 檔案中</span></span><br><span class="line">iperf3 -c SERVER_IP --logfile output.txt</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><h3 id="指定連接埠"><a href="#指定連接埠" class="headerlink" title="指定連接埠"></a>指定連接埠</h3><ul>
-<li><p>iPerf3 預設會使用的連接埠（port）是 <code>5201</code>，若要自行指定連接埠，可以使用 <code>-p</code> 參數：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 12345 這個連接埠的 server</span></span><br><span class="line">iperf3 -s -p 12345</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 12345 這個連接埠的 client</span></span><br><span class="line">iperf3 -c SERVER_IP -p 12345</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><h3 id="JSON-格式輸出"><a href="#JSON-格式輸出" class="headerlink" title="JSON 格式輸出"></a>JSON 格式輸出</h3><ul>
-<li><p>若要使用程式讀取 iPerf3 的測試結果，可將輸出格式改為 JSON 會更方便。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 JSON 格式輸出</span></span><br><span class="line">iperf3 -c SERVER_IP -J</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><h3 id="多線連接"><a href="#多線連接" class="headerlink" title="多線連接"></a>多線連接</h3><ul>
-<li><p><code>-P</code> 參數可以指定同時使用幾條連線進行測試：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 同時使用 2 條連線測試</span></span><br><span class="line">iperf3 -c SERVER_IP -P 2</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><h3 id="UDP-傳輸協定"><a href="#UDP-傳輸協定" class="headerlink" title="UDP 傳輸協定"></a>UDP 傳輸協定</h3><ul>
-<li><p>若要測試 UDP 傳輸協定的效能，可以使用 <code>-u</code> 參數：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 UDP 傳輸協定</span></span><br><span class="line">iperf3 -c SERVER_IP -u</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><h3 id="反向傳輸-上傳"><a href="#反向傳輸-上傳" class="headerlink" title="反向傳輸(上傳)"></a>反向傳輸(上傳)</h3><ul>
-<li><p>iPerf3 預設會測試上傳的速度（由 client 傳送資料，而 server 負責接收）若要測試下載的速度（由 server 傳送資料，而 client 負責接收），則可以使用 <code>-R</code> 參數：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 測試反向傳輸（下載）</span></span><br><span class="line">iperf3 -c SERVER_IP -R</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><h3 id="IPv4-與-IPv6"><a href="#IPv4-與-IPv6" class="headerlink" title="IPv4 與 IPv6"></a>IPv4 與 IPv6</h3><ul>
-<li><p><code>-4</code> 與 <code>-6</code> 可以指定只使用 IPv4 或 IPv6：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 只使用 IPv4</span></span><br><span class="line">iperf3 -c SERVER_IP -4</span><br><span class="line"></span><br><span class="line"><span class="comment"># 只使用 IPv6</span></span><br><span class="line">iperf3 -c SERVER_IP -6</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><h3 id="自訂傳送檔案"><a href="#自訂傳送檔案" class="headerlink" title="自訂傳送檔案"></a>自訂傳送檔案</h3><ul>
-<li><p>我們可以使用 <code>-f</code> 自訂用來測試傳送的檔案：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 YOUR_FILE 這個檔案來測試傳送速度</span></span><br><span class="line">iperf3 -c SERVER_IP -F YOUR_FILE</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>linux</category>
-      </categories>
-      <tags>
-        <tag>iperf3</tag>
       </tags>
   </entry>
   <entry>
@@ -888,6 +888,86 @@
       <tags>
         <tag>Harbor</tag>
         <tag>Registry</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>資源指標 metrics-server</title>
+    <url>/2022/01/11/%E8%B3%87%E6%BA%90%E6%8C%87%E6%A8%99-metrics-server/</url>
+    <content><![CDATA[<h2 id="Metrics-Server"><a href="#Metrics-Server" class="headerlink" title="Metrics Server"></a>Metrics Server</h2><blockquote>
+<p>Metrics Server 從 Kubelets 收集資源指標，並通過Metrics API在 Kubernetes apiserver 中公開它們， 以供Horizontal Pod Autoscaler和Vertical Pod Autoscaler 使用。<span id="more"></span></p>
+</blockquote>
+<h2 id="安裝"><a href="#安裝" class="headerlink" title="安裝"></a>安裝</h2><ul>
+<li>從 yaml 安裝</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>從 Helm 安裝</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 加入倉庫 </span></span><br><span class="line">helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/</span><br><span class="line"><span class="comment"># 安裝</span></span><br><span class="line">helm upgrade --install metrics-server metrics-server/metrics-server</span><br></pre></td></tr></table></figure>
+
+<h2 id="檢查指標API可用性"><a href="#檢查指標API可用性" class="headerlink" title="檢查指標API可用性"></a>檢查指標API可用性</h2><blockquote>
+<p>kubectl get –raw 可以返回cluster中所有節點的資源使用狀況列表</p>
+</blockquote>
+<ul>
+<li><p>檢查 Node</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl get --raw <span class="string">&quot;/apis/metrics.k8s.io/v1beta1/nodes&quot;</span> | jq</span><br></pre></td></tr></table></figure></li>
+<li><p>檢查 Pod</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl get --raw <span class="string">&quot;/apis/metrics.k8s.io/v1beta1/pods&quot;</span> | jq</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="顯示資源使用訊息"><a href="#顯示資源使用訊息" class="headerlink" title="顯示資源使用訊息"></a>顯示資源使用訊息</h2><blockquote>
+<p>kubectl top 可以查看 Node 和 Pod 的資源使用訊息, 包含node和pod兩個子命令, 可以顯示相關的資源佔用率</p>
+</blockquote>
+<ul>
+<li><p>查看 Node</p>
+<ul>
+<li><p>查看所有 Node</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl top node</span><br></pre></td></tr></table></figure></li>
+<li><p>查看單一 Node 資源使用訊息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl top node &lt; Node Name&gt;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>查看 Pod</p>
+<ul>
+<li><p>查看 Namespace 下所有 Pod</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 若不指定 namespace 則會顯示預設 (default) namespace 底下的 Pod資訊</span></span><br><span class="line">kubectl top pod -n &lt; Namespace&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>查看單一 Pod 資源使用訊息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl top pod  &lt; Pod Name &gt;  -n &lt; Namespace &gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>查看 Pod 中 containers 資源使用訊息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl top pod  &lt; Pod Name &gt; -n &lt; Namespace &gt;  --containers</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h2 id="佈署錯誤及解決方法"><a href="#佈署錯誤及解決方法" class="headerlink" title="佈署錯誤及解決方法"></a>佈署錯誤及解決方法</h2><ul>
+<li><p>no metrics known for pod</p>
+<ul>
+<li><p>原因</p>
+<ul>
+<li>metrics-server 預設會使用 Hostname 來進行通訊 , 如果沒有相應設定的話是無法進行通訊的 .</li>
+</ul>
+</li>
+<li><p>解決方法</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 加入 InternalIP 使 metrics-server 能透過 IP 進行通訊</span></span><br><span class="line"><span class="comment"># 新版本官方佈署文件中已修改為 InternalIP,ExternalIP,Hostname ,若直接佈署新版較不會產生此問題</span></span><br><span class="line"><span class="attr">args:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&#x27;--kubelet-preferred-address-types=InternalIP&#x27;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>x509: cannot validate certificate</p>
+<ul>
+<li><p>原因</p>
+<ul>
+<li>證書驗證錯誤</li>
+</ul>
+</li>
+<li><p>解決方法</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使 metrics-server 忽略證書錯誤</span></span><br><span class="line"><span class="attr">args:</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="string">&#x27;--kubelet-insecure-tls&#x27;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>kubernetes</category>
+      </categories>
+      <tags>
+        <tag>metrics </tag>
       </tags>
   </entry>
 </search>

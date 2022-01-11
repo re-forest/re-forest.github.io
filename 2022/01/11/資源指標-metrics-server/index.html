@@ -20,20 +20,20 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Golang 套件筆記環境變數套件 godotenv godotenv從.env文件中讀取配置,然後存儲到程序的環境變量中">
+  <meta name="description" content="Metrics Server Metrics Server 從 Kubelets 收集資源指標，並通過Metrics API在 Kubernetes apiserver 中公開它們， 以供Horizontal Pod Autoscaler和Vertical Pod Autoscaler 使用。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Golang 套件筆記 godotenv">
-<meta property="og:url" content="http://example.com/2021/12/27/Golang-%E5%A5%97%E4%BB%B6%E7%AD%86%E8%A8%98-godotenv/index.html">
+<meta property="og:title" content="資源指標 metrics-server">
+<meta property="og:url" content="http://example.com/2022/01/11/%E8%B3%87%E6%BA%90%E6%8C%87%E6%A8%99-metrics-server/index.html">
 <meta property="og:site_name" content="re-forest 的部落格">
-<meta property="og:description" content="Golang 套件筆記環境變數套件 godotenv godotenv從.env文件中讀取配置,然後存儲到程序的環境變量中">
+<meta property="og:description" content="Metrics Server Metrics Server 從 Kubelets 收集資源指標，並通過Metrics API在 Kubernetes apiserver 中公開它們， 以供Horizontal Pod Autoscaler和Vertical Pod Autoscaler 使用。">
 <meta property="og:locale" content="zh_TW">
-<meta property="article:published_time" content="2021-12-27T15:53:00.000Z">
-<meta property="article:modified_time" content="2021-12-27T15:54:51.510Z">
+<meta property="article:published_time" content="2022-01-11T07:53:00.000Z">
+<meta property="article:modified_time" content="2022-01-11T07:57:06.014Z">
 <meta property="article:author" content="re-forest">
-<meta property="article:tag" content="GO">
+<meta property="article:tag" content="metrics ">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/2021/12/27/Golang-%E5%A5%97%E4%BB%B6%E7%AD%86%E8%A8%98-godotenv/">
+<link rel="canonical" href="http://example.com/2022/01/11/%E8%B3%87%E6%BA%90%E6%8C%87%E6%A8%99-metrics-server/">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>Golang 套件筆記 godotenv | re-forest 的部落格</title>
+  <title>資源指標 metrics-server | re-forest 的部落格</title>
   
 
 
@@ -190,7 +190,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/12/27/Golang-%E5%A5%97%E4%BB%B6%E7%AD%86%E8%A8%98-godotenv/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/01/11/%E8%B3%87%E6%BA%90%E6%8C%87%E6%A8%99-metrics-server/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/1123.jpg">
@@ -203,7 +203,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Golang 套件筆記 godotenv
+          資源指標 metrics-server
         </h1>
 
         <div class="post-meta">
@@ -214,7 +214,7 @@
               <span class="post-meta-item-text">發表於</span>
               
 
-              <time title="創建時間：2021-12-27 23:53:00 / 修改時間：23:54:51" itemprop="dateCreated datePublished" datetime="2021-12-27T23:53:00+08:00">2021-12-27</time>
+              <time title="創建時間：2022-01-11 15:53:00 / 修改時間：15:57:06" itemprop="dateCreated datePublished" datetime="2022-01-11T15:53:00+08:00">2022-01-11</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -222,7 +222,7 @@
               </span>
               <span class="post-meta-item-text">分類於</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/GO/" itemprop="url" rel="index"><span itemprop="name">GO</span></a>
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index"><span itemprop="name">kubernetes</span></a>
                 </span>
             </span>
 
@@ -237,24 +237,74 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="Golang-套件筆記"><a href="#Golang-套件筆記" class="headerlink" title="Golang 套件筆記"></a>Golang 套件筆記</h2><h3 id="環境變數套件-godotenv"><a href="#環境變數套件-godotenv" class="headerlink" title="環境變數套件 godotenv"></a>環境變數套件 godotenv</h3><blockquote>
-<p><a target="_blank" rel="noopener" href="https://github.com/joho/godotenv">godotenv</a>從<code>.env</code>文件中讀取配置,然後存儲到程序的環境變量中</p>
+        <h2 id="Metrics-Server"><a href="#Metrics-Server" class="headerlink" title="Metrics Server"></a>Metrics Server</h2><blockquote>
+<p>Metrics Server 從 Kubelets 收集資源指標，並通過Metrics API在 Kubernetes apiserver 中公開它們， 以供Horizontal Pod Autoscaler和Vertical Pod Autoscaler 使用。<span id="more"></span></p>
 </blockquote>
-<span id="more"></span>
-<h3 id="安裝方法"><a href="#安裝方法" class="headerlink" title="安裝方法"></a>安裝方法</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get github.com/joho/godotenv</span><br></pre></td></tr></table></figure>
+<h2 id="安裝"><a href="#安裝" class="headerlink" title="安裝"></a>安裝</h2><ul>
+<li>從 yaml 安裝</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml</span><br></pre></td></tr></table></figure>
 
-<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><ul>
-<li><p>在專案跟目錄中新增<code>.env</code>檔案</p>
-<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">S3<span class="built_in">_</span>BUCKET=YOURS3BUCKET</span><br><span class="line">SECRET<span class="built_in">_</span>KEY=YOURSECRETKEYGOESHERE</span><br></pre></td></tr></table></figure></li>
-<li><p>在 GO 應用中使用手動加載</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;github.com/joho/godotenv&quot;</span></span><br><span class="line">    <span class="string">&quot;log&quot;</span></span><br><span class="line">    <span class="string">&quot;os&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="comment">//讀取 env 文件並將文件參數加入環境變數</span></span><br><span class="line">  err := godotenv.Load()</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatal(<span class="string">&quot;Error loading .env file&quot;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//使用 os.Getenv 取得環境變數值</span></span><br><span class="line">  s3Bucket := os.Getenv(<span class="string">&quot;S3_BUCKET&quot;</span>)</span><br><span class="line">  secretKey := os.Getenv(<span class="string">&quot;SECRET_KEY&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>在 GO 應用中使用自動加載</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    _ <span class="string">&quot;github.com/joho/godotenv&quot;</span></span><br><span class="line">    <span class="string">&quot;log&quot;</span></span><br><span class="line">    <span class="string">&quot;os&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="comment">//使用空導入,亦即在包名前加上&quot;_&quot;後會自動加載</span></span><br><span class="line">  <span class="comment">//直接使用 os.Getenv 取得環境變數值</span></span><br><span class="line">  s3Bucket := os.Getenv(<span class="string">&quot;S3_BUCKET&quot;</span>)</span><br><span class="line">  secretKey := os.Getenv(<span class="string">&quot;SECRET_KEY&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>不存入環境變量</p>
-<blockquote>
-<p><code>godotenv</code>允許不將<code>.env</code>文件內容加入環境變量,使用<code>godotenv.Read()</code>返回一個<code>map[string]string</code>,可直接使用</p>
+<ul>
+<li>從 Helm 安裝</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 加入倉庫 </span></span><br><span class="line">helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/</span><br><span class="line"><span class="comment"># 安裝</span></span><br><span class="line">helm upgrade --install metrics-server metrics-server/metrics-server</span><br></pre></td></tr></table></figure>
+
+<h2 id="檢查指標API可用性"><a href="#檢查指標API可用性" class="headerlink" title="檢查指標API可用性"></a>檢查指標API可用性</h2><blockquote>
+<p>kubectl get –raw 可以返回cluster中所有節點的資源使用狀況列表</p>
 </blockquote>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">&quot;fmt&quot;</span></span><br><span class="line">  <span class="string">&quot;log&quot;</span></span><br><span class="line">  <span class="string">&quot;github.com/joho/godotenv&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="keyword">var</span> myEnv <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span></span><br><span class="line">  <span class="comment">// godotenv.Read()</span></span><br><span class="line">  myEnv, err := godotenv.Read()</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatal(err)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// use </span></span><br><span class="line">  fmt.Println(<span class="string">&quot;S3_BUCKET: &quot;</span>, myEnv[<span class="string">&quot;S3_BUCKET&quot;</span>])</span><br><span class="line">  fmt.Println(<span class="string">&quot;SECRET_KEY: &quot;</span>, myEnv[<span class="string">&quot;SECRET_KEY&quot;</span>])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<ul>
+<li><p>檢查 Node</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get --raw <span class="string">&quot;/apis/metrics.k8s.io/v1beta1/nodes&quot;</span> | jq</span><br></pre></td></tr></table></figure></li>
+<li><p>檢查 Pod</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get --raw <span class="string">&quot;/apis/metrics.k8s.io/v1beta1/pods&quot;</span> | jq</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="顯示資源使用訊息"><a href="#顯示資源使用訊息" class="headerlink" title="顯示資源使用訊息"></a>顯示資源使用訊息</h2><blockquote>
+<p>kubectl top 可以查看 Node 和 Pod 的資源使用訊息, 包含node和pod兩個子命令, 可以顯示相關的資源佔用率</p>
+</blockquote>
+<ul>
+<li><p>查看 Node</p>
+<ul>
+<li><p>查看所有 Node</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl top node</span><br></pre></td></tr></table></figure></li>
+<li><p>查看單一 Node 資源使用訊息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl top node &lt; Node Name&gt;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>查看 Pod</p>
+<ul>
+<li><p>查看 Namespace 下所有 Pod</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 若不指定 namespace 則會顯示預設 (default) namespace 底下的 Pod資訊</span></span><br><span class="line">kubectl top pod -n &lt; Namespace&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>查看單一 Pod 資源使用訊息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl top pod  &lt; Pod Name &gt;  -n &lt; Namespace &gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>查看 Pod 中 containers 資源使用訊息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl top pod  &lt; Pod Name &gt; -n &lt; Namespace &gt;  --containers</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h2 id="佈署錯誤及解決方法"><a href="#佈署錯誤及解決方法" class="headerlink" title="佈署錯誤及解決方法"></a>佈署錯誤及解決方法</h2><ul>
+<li><p>no metrics known for pod</p>
+<ul>
+<li><p>原因</p>
+<ul>
+<li>metrics-server 預設會使用 Hostname 來進行通訊 , 如果沒有相應設定的話是無法進行通訊的 .</li>
+</ul>
+</li>
+<li><p>解決方法</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 加入 InternalIP 使 metrics-server 能透過 IP 進行通訊</span></span><br><span class="line"><span class="comment"># 新版本官方佈署文件中已修改為 InternalIP,ExternalIP,Hostname ,若直接佈署新版較不會產生此問題</span></span><br><span class="line"><span class="attr">args:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&#x27;--kubelet-preferred-address-types=InternalIP&#x27;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>x509: cannot validate certificate</p>
+<ul>
+<li><p>原因</p>
+<ul>
+<li>證書驗證錯誤</li>
+</ul>
+</li>
+<li><p>解決方法</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使 metrics-server 忽略證書錯誤</span></span><br><span class="line"><span class="attr">args:</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="string">&#x27;--kubelet-insecure-tls&#x27;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
 </ul>
 
     </div>
@@ -265,7 +315,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/GO/" rel="tag"># GO</a>
+              <a href="/tags/metrics/" rel="tag"># metrics </a>
           </div>
 
         
@@ -274,13 +324,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/12/17/AWS-EC2-%E5%9F%B7%E8%A1%8C%E5%80%8B%E9%AB%94%E6%9C%AC%E5%9C%B0%E9%83%A8%E5%B1%AC/" rel="prev" title="AWS EC2 執行個體本地部署">
-      <i class="fa fa-chevron-left"></i> AWS EC2 執行個體本地部署
+    <a href="/2022/01/07/PrometheusOperator/" rel="prev" title="PrometheusOperator">
+      <i class="fa fa-chevron-left"></i> PrometheusOperator
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2021/12/31/%E4%BD%BF%E7%94%A8Harbor%E6%9E%B6%E8%A8%ADRegistry/" rel="next" title="使用Harbor架設Registry">
-      使用Harbor架設Registry <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -339,7 +386,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Golang-%E5%A5%97%E4%BB%B6%E7%AD%86%E8%A8%98"><span class="nav-number">1.</span> <span class="nav-text">Golang 套件筆記</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%92%B0%E5%A2%83%E8%AE%8A%E6%95%B8%E5%A5%97%E4%BB%B6-godotenv"><span class="nav-number">1.1.</span> <span class="nav-text">環境變數套件 godotenv</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%9D%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">安裝方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">使用方法</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Metrics-Server"><span class="nav-number">1.</span> <span class="nav-text">Metrics Server</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%9D"><span class="nav-number">2.</span> <span class="nav-text">安裝</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AA%A2%E6%9F%A5%E6%8C%87%E6%A8%99API%E5%8F%AF%E7%94%A8%E6%80%A7"><span class="nav-number">3.</span> <span class="nav-text">檢查指標API可用性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%AF%E7%A4%BA%E8%B3%87%E6%BA%90%E4%BD%BF%E7%94%A8%E8%A8%8A%E6%81%AF"><span class="nav-number">4.</span> <span class="nav-text">顯示資源使用訊息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%88%E7%BD%B2%E9%8C%AF%E8%AA%A4%E5%8F%8A%E8%A7%A3%E6%B1%BA%E6%96%B9%E6%B3%95"><span class="nav-number">5.</span> <span class="nav-text">佈署錯誤及解決方法</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
