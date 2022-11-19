@@ -232,6 +232,36 @@
       </tags>
   </entry>
   <entry>
+    <title>Golang 套件筆記 godotenv</title>
+    <url>/2021/12/27/Golang-%E5%A5%97%E4%BB%B6%E7%AD%86%E8%A8%98-godotenv/</url>
+    <content><![CDATA[<h2 id="Golang-套件筆記"><a href="#Golang-套件筆記" class="headerlink" title="Golang 套件筆記"></a>Golang 套件筆記</h2><h3 id="環境變數套件-godotenv"><a href="#環境變數套件-godotenv" class="headerlink" title="環境變數套件 godotenv"></a>環境變數套件 godotenv</h3><blockquote>
+<p><a href="https://github.com/joho/godotenv">godotenv</a>從<code>.env</code>文件中讀取配置,然後存儲到程序的環境變量中</p>
+</blockquote>
+<span id="more"></span>
+<h3 id="安裝方法"><a href="#安裝方法" class="headerlink" title="安裝方法"></a>安裝方法</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">go get github.com/joho/godotenv</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><ul>
+<li><p>在專案跟目錄中新增<code>.env</code>檔案</p>
+<figure class="highlight tex"><table><tr><td class="code"><pre><span class="line">S3<span class="built_in">_</span>BUCKET=YOURS3BUCKET</span><br><span class="line">SECRET<span class="built_in">_</span>KEY=YOURSECRETKEYGOESHERE</span><br></pre></td></tr></table></figure></li>
+<li><p>在 GO 應用中使用手動加載</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;github.com/joho/godotenv&quot;</span></span><br><span class="line">    <span class="string">&quot;log&quot;</span></span><br><span class="line">    <span class="string">&quot;os&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="comment">//讀取 env 文件並將文件參數加入環境變數</span></span><br><span class="line">  err := godotenv.Load()</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatal(<span class="string">&quot;Error loading .env file&quot;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//使用 os.Getenv 取得環境變數值</span></span><br><span class="line">  s3Bucket := os.Getenv(<span class="string">&quot;S3_BUCKET&quot;</span>)</span><br><span class="line">  secretKey := os.Getenv(<span class="string">&quot;SECRET_KEY&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>在 GO 應用中使用自動加載</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    _ <span class="string">&quot;github.com/joho/godotenv&quot;</span></span><br><span class="line">    <span class="string">&quot;log&quot;</span></span><br><span class="line">    <span class="string">&quot;os&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="comment">//使用空導入,亦即在包名前加上&quot;_&quot;後會自動加載</span></span><br><span class="line">  <span class="comment">//直接使用 os.Getenv 取得環境變數值</span></span><br><span class="line">  s3Bucket := os.Getenv(<span class="string">&quot;S3_BUCKET&quot;</span>)</span><br><span class="line">  secretKey := os.Getenv(<span class="string">&quot;SECRET_KEY&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>不存入環境變量</p>
+<blockquote>
+<p><code>godotenv</code>允許不將<code>.env</code>文件內容加入環境變量,使用<code>godotenv.Read()</code>返回一個<code>map[string]string</code>,可直接使用</p>
+</blockquote>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">&quot;fmt&quot;</span></span><br><span class="line">  <span class="string">&quot;log&quot;</span></span><br><span class="line">  <span class="string">&quot;github.com/joho/godotenv&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="keyword">var</span> myEnv <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span></span><br><span class="line">  <span class="comment">// godotenv.Read()</span></span><br><span class="line">  myEnv, err := godotenv.Read()</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatal(err)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// use </span></span><br><span class="line">  fmt.Println(<span class="string">&quot;S3_BUCKET: &quot;</span>, myEnv[<span class="string">&quot;S3_BUCKET&quot;</span>])</span><br><span class="line">  fmt.Println(<span class="string">&quot;SECRET_KEY: &quot;</span>, myEnv[<span class="string">&quot;SECRET_KEY&quot;</span>])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+      <categories>
+        <category>GO</category>
+      </categories>
+      <tags>
+        <tag>GO</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>GitLab-CE 異地遷移與升級</title>
     <url>/2021/12/15/GitLab-CE-%E7%95%B0%E5%9C%B0%E9%81%B7%E7%A7%BB%E8%88%87%E5%8D%87%E7%B4%9A/</url>
     <content><![CDATA[<h1 id="GitLab-CE-異地遷移與升級"><a href="#GitLab-CE-異地遷移與升級" class="headerlink" title="GitLab-CE 異地遷移與升級"></a>GitLab-CE 異地遷移與升級</h1><h2 id="軟體需求"><a href="#軟體需求" class="headerlink" title="軟體需求"></a>軟體需求</h2><ol>
@@ -317,33 +347,55 @@
       </tags>
   </entry>
   <entry>
-    <title>Golang 套件筆記 godotenv</title>
-    <url>/2021/12/27/Golang-%E5%A5%97%E4%BB%B6%E7%AD%86%E8%A8%98-godotenv/</url>
-    <content><![CDATA[<h2 id="Golang-套件筆記"><a href="#Golang-套件筆記" class="headerlink" title="Golang 套件筆記"></a>Golang 套件筆記</h2><h3 id="環境變數套件-godotenv"><a href="#環境變數套件-godotenv" class="headerlink" title="環境變數套件 godotenv"></a>環境變數套件 godotenv</h3><blockquote>
-<p><a href="https://github.com/joho/godotenv">godotenv</a>從<code>.env</code>文件中讀取配置,然後存儲到程序的環境變量中</p>
-</blockquote>
+    <title>Kubernetes 手動憑證更新</title>
+    <url>/2022/11/19/Kubernetes-%E6%89%8B%E5%8B%95%E6%86%91%E8%AD%89%E6%9B%B4%E6%96%B0/</url>
+    <content><![CDATA[<h3 id="Kubernetes-手動憑證更新"><a href="#Kubernetes-手動憑證更新" class="headerlink" title="Kubernetes 手動憑證更新"></a>Kubernetes 手動憑證更新</h3><h3 id="問題"><a href="#問題" class="headerlink" title="問題"></a>問題</h3><p>        在 master 執行 kubectl get pod 時出現 x509 certificate has expired or is not yet valid  憑證錯誤.</p>
 <span id="more"></span>
-<h3 id="安裝方法"><a href="#安裝方法" class="headerlink" title="安裝方法"></a>安裝方法</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">go get github.com/joho/godotenv</span><br></pre></td></tr></table></figure>
-
-<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><ul>
-<li><p>在專案跟目錄中新增<code>.env</code>檔案</p>
-<figure class="highlight tex"><table><tr><td class="code"><pre><span class="line">S3<span class="built_in">_</span>BUCKET=YOURS3BUCKET</span><br><span class="line">SECRET<span class="built_in">_</span>KEY=YOURSECRETKEYGOESHERE</span><br></pre></td></tr></table></figure></li>
-<li><p>在 GO 應用中使用手動加載</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;github.com/joho/godotenv&quot;</span></span><br><span class="line">    <span class="string">&quot;log&quot;</span></span><br><span class="line">    <span class="string">&quot;os&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="comment">//讀取 env 文件並將文件參數加入環境變數</span></span><br><span class="line">  err := godotenv.Load()</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatal(<span class="string">&quot;Error loading .env file&quot;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//使用 os.Getenv 取得環境變數值</span></span><br><span class="line">  s3Bucket := os.Getenv(<span class="string">&quot;S3_BUCKET&quot;</span>)</span><br><span class="line">  secretKey := os.Getenv(<span class="string">&quot;SECRET_KEY&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>在 GO 應用中使用自動加載</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    _ <span class="string">&quot;github.com/joho/godotenv&quot;</span></span><br><span class="line">    <span class="string">&quot;log&quot;</span></span><br><span class="line">    <span class="string">&quot;os&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="comment">//使用空導入,亦即在包名前加上&quot;_&quot;後會自動加載</span></span><br><span class="line">  <span class="comment">//直接使用 os.Getenv 取得環境變數值</span></span><br><span class="line">  s3Bucket := os.Getenv(<span class="string">&quot;S3_BUCKET&quot;</span>)</span><br><span class="line">  secretKey := os.Getenv(<span class="string">&quot;SECRET_KEY&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>不存入環境變量</p>
-<blockquote>
-<p><code>godotenv</code>允許不將<code>.env</code>文件內容加入環境變量,使用<code>godotenv.Read()</code>返回一個<code>map[string]string</code>,可直接使用</p>
-</blockquote>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">&quot;fmt&quot;</span></span><br><span class="line">  <span class="string">&quot;log&quot;</span></span><br><span class="line">  <span class="string">&quot;github.com/joho/godotenv&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="keyword">var</span> myEnv <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span></span><br><span class="line">  <span class="comment">// godotenv.Read()</span></span><br><span class="line">  myEnv, err := godotenv.Read()</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatal(err)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// use </span></span><br><span class="line">  fmt.Println(<span class="string">&quot;S3_BUCKET: &quot;</span>, myEnv[<span class="string">&quot;S3_BUCKET&quot;</span>])</span><br><span class="line">  fmt.Println(<span class="string">&quot;SECRET_KEY: &quot;</span>, myEnv[<span class="string">&quot;SECRET_KEY&quot;</span>])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<h3 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h3><p>        kubeadm 安裝 Kubernetes 時默認生成的 client certificate 有效期是1年 .</p>
+<h3 id="自動更新憑證"><a href="#自動更新憑證" class="headerlink" title="自動更新憑證"></a>自動更新憑證</h3><p>        自動更新憑證機制為 kubeadm 會在控制介面版本升級一併更新憑證 , 用意為促使客戶定期執行版本升級.</p>
+<h3 id="手動更新憑證"><a href="#手動更新憑證" class="headerlink" title="手動更新憑證"></a>手動更新憑證</h3><ul>
+<li>        使用指令確認憑證有效時間</li>
 </ul>
-]]></content>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">kubeadm certs check<span class="literal">-expiration</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>         顯示結果示例 </li>
+</ul>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">[<span class="type">check</span>-<span class="type">expiration</span>] Reading configuration from the cluster...</span><br><span class="line">[<span class="type">check</span>-<span class="type">expiration</span>] FYI: You can look at this config file with <span class="string">&#x27;kubectl -n kube-system get cm kubeadm-config -o yaml&#x27;</span></span><br><span class="line"></span><br><span class="line">CERTIFICATE                EXPIRES                  RESIDUAL TIME   CERTIFICATE AUTHORITY   EXTERNALLY MANAGED</span><br><span class="line">admin.conf                 Nov <span class="number">18</span>, <span class="number">2023</span> <span class="number">13</span>:<span class="number">38</span> UTC   <span class="number">364</span>d            ca                      no</span><br><span class="line">apiserver                  Nov <span class="number">18</span>, <span class="number">2023</span> <span class="number">13</span>:<span class="number">37</span> UTC   <span class="number">364</span>d            ca                      no</span><br><span class="line">apiserver<span class="literal">-etcd</span><span class="literal">-client</span>      Nov <span class="number">18</span>, <span class="number">2023</span> <span class="number">13</span>:<span class="number">37</span> UTC   <span class="number">364</span>d            etcd<span class="literal">-ca</span>                 no</span><br><span class="line">apiserver<span class="literal">-kubelet</span><span class="literal">-client</span>   Nov <span class="number">18</span>, <span class="number">2023</span> <span class="number">13</span>:<span class="number">37</span> UTC   <span class="number">364</span>d            ca                      no</span><br><span class="line">controller<span class="literal">-manager</span>.conf    Nov <span class="number">18</span>, <span class="number">2023</span> <span class="number">13</span>:<span class="number">37</span> UTC   <span class="number">364</span>d            ca                      no</span><br><span class="line">etcd<span class="literal">-healthcheck</span><span class="literal">-client</span>    Nov <span class="number">18</span>, <span class="number">2023</span> <span class="number">07</span>:<span class="number">43</span> UTC   <span class="number">363</span>d            etcd<span class="literal">-ca</span>                 no</span><br><span class="line">etcd<span class="literal">-peer</span>                  Nov <span class="number">18</span>, <span class="number">2023</span> <span class="number">07</span>:<span class="number">43</span> UTC   <span class="number">363</span>d            etcd<span class="literal">-ca</span>                 no</span><br><span class="line">etcd<span class="literal">-server</span>                Nov <span class="number">18</span>, <span class="number">2023</span> <span class="number">07</span>:<span class="number">43</span> UTC   <span class="number">363</span>d            etcd<span class="literal">-ca</span>                 no</span><br><span class="line">front<span class="literal">-proxy</span><span class="literal">-client</span>         Nov <span class="number">18</span>, <span class="number">2023</span> <span class="number">13</span>:<span class="number">37</span> UTC   <span class="number">364</span>d            front<span class="literal">-proxy</span><span class="literal">-ca</span>          no</span><br><span class="line">scheduler.conf             Nov <span class="number">18</span>, <span class="number">2023</span> <span class="number">13</span>:<span class="number">38</span> UTC   <span class="number">364</span>d            ca                      no</span><br><span class="line"></span><br><span class="line">CERTIFICATE AUTHORITY   EXPIRES                  RESIDUAL TIME   EXTERNALLY MANAGED</span><br><span class="line">ca                      Nov <span class="number">14</span>, <span class="number">2031</span> <span class="number">14</span>:<span class="number">17</span> UTC   <span class="number">8</span>y              no</span><br><span class="line">etcd<span class="literal">-ca</span>                 Nov <span class="number">14</span>, <span class="number">2031</span> <span class="number">14</span>:<span class="number">17</span> UTC   <span class="number">8</span>y              no</span><br><span class="line">front<span class="literal">-proxy</span><span class="literal">-ca</span>          Nov <span class="number">14</span>, <span class="number">2031</span> <span class="number">14</span>:<span class="number">17</span> UTC   </span><br></pre></td></tr></table></figure>
+
+<p>         其中主要檢視 RESIDUAL TIME 憑證到期時間</p>
+<ul>
+<li>        使用指令刷新所有憑證<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kubeadm certs renew all </span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>        此命令用 CA（或者 front-proxy-CA ）證書和存儲在 <code>/etc/kubernetes/pki</code> 中的密鑰執行更新 , 更新憑證後 RESIDUAL TIME 會更新為一年到期 , 與自動更新憑證套用一樣的機制 , 但這邊需特別注意若有多個 Master 則每一個 Master 節點上皆須要執行此命令 .</p>
+<ul>
+<li>        再次使用指令檢視憑證到期時間</li>
+</ul>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">kubeadm certs check<span class="literal">-expiration</span></span><br></pre></td></tr></table></figure>
+
+<p>        若完成憑證更新 RESIDUAL TIME 憑證到期時間則會顯示一年.</p>
+<ul>
+<li>        重啟 Master 節點上的相關服務來完成證書更新 (方法一)</li>
+</ul>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">docker <span class="built_in">ps</span> |egrep <span class="string">&quot;k8s_kube-apiserver|k8s_kube-scheduler|k8s_kube-controller&quot;</span>|awk <span class="string">&#x27;&#123;print $1&#125;&#x27;</span>|xargs docker restart</span><br></pre></td></tr></table></figure>
+
+<p>          上述指令指重新啟動了 apiserver 、scheduler、controller 三個相關的服務 , 若有 etcd 則需連同 etcd 一併重啟.</p>
+<ul>
+<li>        重啟 Master 節點上的相關服務來完成證書更新 (方法二)</li>
+</ul>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">mkdir <span class="variable">$HOME</span>/manifests</span><br><span class="line"></span><br><span class="line">sudo <span class="built_in">mv</span>/etc/kubernetes/manifests/*.yaml <span class="variable">$HOME</span>/manifests <span class="comment">#等待至少 20 秒 , 讓 kubelet 去關閉相關的 pod</span></span><br><span class="line"></span><br><span class="line">sudomv <span class="variable">$HOME</span>/manifests/*yaml /etc/kubernetes/manifests <span class="comment">#等待幾分鐘讓 kubelet 重新創建相關的 pod</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>         更新 ~/.kube/config 文件</li>
+</ul>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">sudo <span class="built_in">cp</span> <span class="literal">-i</span> /etc/kubernetes/admin.conf <span class="variable">$HOME</span>/.kube/config</span><br><span class="line"></span><br><span class="line">sudo chown <span class="variable">$</span>(id <span class="literal">-u</span>):<span class="variable">$</span>(id <span class="literal">-g</span>) <span class="variable">$HOME</span>/.kube/config</span><br></pre></td></tr></table></figure>
+
+<h3 id="檢查群集狀態"><a href="#檢查群集狀態" class="headerlink" title="檢查群集狀態"></a>檢查群集狀態</h3><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">kubectl get node</span><br><span class="line">kubectl get pod</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
-        <category>GO</category>
+        <category>kubernetes</category>
       </categories>
       <tags>
-        <tag>GO</tag>
+        <tag>certificate</tag>
       </tags>
   </entry>
   <entry>
@@ -435,85 +487,6 @@
       </categories>
       <tags>
         <tag>telegraf</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>iPerf3  網路速度測試工具</title>
-    <url>/2021/12/15/iPerf3-%E7%B6%B2%E8%B7%AF%E9%80%9F%E5%BA%A6%E6%B8%AC%E8%A9%A6%E5%B7%A5%E5%85%B7/</url>
-    <content><![CDATA[<h2 id="iPerf3-網路速度測試工具"><a href="#iPerf3-網路速度測試工具" class="headerlink" title="iPerf3  網路速度測試工具"></a>iPerf3  網路速度測試工具</h2><h4 id="支援平台"><a href="#支援平台" class="headerlink" title="支援平台"></a>支援平台</h4><ul>
-<li><p>Windows、Mac OS X、Linux、FreeBSD</p>
-<span id="more"></span>
-<h4 id="支援傳輸協定"><a href="#支援傳輸協定" class="headerlink" title="支援傳輸協定"></a>支援傳輸協定</h4></li>
-<li><p>TCP、UDP、SCTP </p>
-</li>
-</ul>
-<h4 id="支援網路位址"><a href="#支援網路位址" class="headerlink" title="支援網路位址"></a>支援網路位址</h4><ul>
-<li>IPv4、IPv6 </li>
-</ul>
-<h4 id="Win10安裝方法"><a href="#Win10安裝方法" class="headerlink" title="Win10安裝方法"></a>Win10安裝方法</h4><ul>
-<li><a href="https://iperf.fr/iperf-download.php">官方網站下載安裝</a></li>
-</ul>
-<h4 id="Debian-Ubuntu-Linux-安裝方式"><a href="#Debian-Ubuntu-Linux-安裝方式" class="headerlink" title="Debian/Ubuntu Linux 安裝方式"></a>Debian/Ubuntu Linux 安裝方式</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install iperf3</span><br></pre></td></tr></table></figure>
-
-<h4 id="測試網路頻寬"><a href="#測試網路頻寬" class="headerlink" title="測試網路頻寬"></a>測試網路頻寬</h4><ul>
-<li><p>一般在使用 iPerf3 測試時，要同時在 server 端與 client 端都各執行一個 iPerf3 程式，讓它們互相傳送資料進行測試，首先啟動 server 端的 <code>iperf3</code>：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Server 端</span></span><br><span class="line">iperf3 -s</span><br></pre></td></tr></table></figure></li>
-<li><p>client 端執行：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Client 端</span></span><br><span class="line">iperf3 -c SERVER_IP</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h4 id="iPerf3-進階指令"><a href="#iPerf3-進階指令" class="headerlink" title="iPerf3 進階指令"></a>iPerf3 進階指令</h4><ul>
-<li><h3 id="測試時間"><a href="#測試時間" class="headerlink" title="測試時間"></a>測試時間</h3><ul>
-<li><p><code>-t</code> 參數可以指定傳輸測試的持續時間，而 <code>-i</code> 可以指定輸出數據的間隔時間：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 測試 20 秒，每隔 4 秒輸出測試數據</span></span><br><span class="line">iperf3 -c SERVER_IP -t 20 -i 4</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><h3 id="儲存測試結果"><a href="#儲存測試結果" class="headerlink" title="儲存測試結果"></a>儲存測試結果</h3><ul>
-<li><p><code>--logfile</code> 參數可以將輸出的測試結果報表或是錯誤訊息儲存至檔案中：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 將輸出訊息儲存至 output.txt 檔案中</span></span><br><span class="line">iperf3 -c SERVER_IP --logfile output.txt</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><h3 id="指定連接埠"><a href="#指定連接埠" class="headerlink" title="指定連接埠"></a>指定連接埠</h3><ul>
-<li><p>iPerf3 預設會使用的連接埠（port）是 <code>5201</code>，若要自行指定連接埠，可以使用 <code>-p</code> 參數：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 12345 這個連接埠的 server</span></span><br><span class="line">iperf3 -s -p 12345</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 12345 這個連接埠的 client</span></span><br><span class="line">iperf3 -c SERVER_IP -p 12345</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><h3 id="JSON-格式輸出"><a href="#JSON-格式輸出" class="headerlink" title="JSON 格式輸出"></a>JSON 格式輸出</h3><ul>
-<li><p>若要使用程式讀取 iPerf3 的測試結果，可將輸出格式改為 JSON 會更方便。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 JSON 格式輸出</span></span><br><span class="line">iperf3 -c SERVER_IP -J</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><h3 id="多線連接"><a href="#多線連接" class="headerlink" title="多線連接"></a>多線連接</h3><ul>
-<li><p><code>-P</code> 參數可以指定同時使用幾條連線進行測試：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 同時使用 2 條連線測試</span></span><br><span class="line">iperf3 -c SERVER_IP -P 2</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><h3 id="UDP-傳輸協定"><a href="#UDP-傳輸協定" class="headerlink" title="UDP 傳輸協定"></a>UDP 傳輸協定</h3><ul>
-<li><p>若要測試 UDP 傳輸協定的效能，可以使用 <code>-u</code> 參數：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 UDP 傳輸協定</span></span><br><span class="line">iperf3 -c SERVER_IP -u</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><h3 id="反向傳輸-上傳"><a href="#反向傳輸-上傳" class="headerlink" title="反向傳輸(上傳)"></a>反向傳輸(上傳)</h3><ul>
-<li><p>iPerf3 預設會測試上傳的速度（由 client 傳送資料，而 server 負責接收）若要測試下載的速度（由 server 傳送資料，而 client 負責接收），則可以使用 <code>-R</code> 參數：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 測試反向傳輸（下載）</span></span><br><span class="line">iperf3 -c SERVER_IP -R</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><h3 id="IPv4-與-IPv6"><a href="#IPv4-與-IPv6" class="headerlink" title="IPv4 與 IPv6"></a>IPv4 與 IPv6</h3><ul>
-<li><p><code>-4</code> 與 <code>-6</code> 可以指定只使用 IPv4 或 IPv6：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 只使用 IPv4</span></span><br><span class="line">iperf3 -c SERVER_IP -4</span><br><span class="line"></span><br><span class="line"><span class="comment"># 只使用 IPv6</span></span><br><span class="line">iperf3 -c SERVER_IP -6</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><h3 id="自訂傳送檔案"><a href="#自訂傳送檔案" class="headerlink" title="自訂傳送檔案"></a>自訂傳送檔案</h3><ul>
-<li><p>我們可以使用 <code>-f</code> 自訂用來測試傳送的檔案：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 YOUR_FILE 這個檔案來測試傳送速度</span></span><br><span class="line">iperf3 -c SERVER_IP -F YOUR_FILE</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>linux</category>
-      </categories>
-      <tags>
-        <tag>iperf3</tag>
       </tags>
   </entry>
   <entry>
@@ -644,6 +617,176 @@
       </categories>
       <tags>
         <tag>Traefik</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iPerf3  網路速度測試工具</title>
+    <url>/2021/12/15/iPerf3-%E7%B6%B2%E8%B7%AF%E9%80%9F%E5%BA%A6%E6%B8%AC%E8%A9%A6%E5%B7%A5%E5%85%B7/</url>
+    <content><![CDATA[<h2 id="iPerf3-網路速度測試工具"><a href="#iPerf3-網路速度測試工具" class="headerlink" title="iPerf3  網路速度測試工具"></a>iPerf3  網路速度測試工具</h2><h4 id="支援平台"><a href="#支援平台" class="headerlink" title="支援平台"></a>支援平台</h4><ul>
+<li><p>Windows、Mac OS X、Linux、FreeBSD</p>
+<span id="more"></span>
+<h4 id="支援傳輸協定"><a href="#支援傳輸協定" class="headerlink" title="支援傳輸協定"></a>支援傳輸協定</h4></li>
+<li><p>TCP、UDP、SCTP </p>
+</li>
+</ul>
+<h4 id="支援網路位址"><a href="#支援網路位址" class="headerlink" title="支援網路位址"></a>支援網路位址</h4><ul>
+<li>IPv4、IPv6 </li>
+</ul>
+<h4 id="Win10安裝方法"><a href="#Win10安裝方法" class="headerlink" title="Win10安裝方法"></a>Win10安裝方法</h4><ul>
+<li><a href="https://iperf.fr/iperf-download.php">官方網站下載安裝</a></li>
+</ul>
+<h4 id="Debian-Ubuntu-Linux-安裝方式"><a href="#Debian-Ubuntu-Linux-安裝方式" class="headerlink" title="Debian/Ubuntu Linux 安裝方式"></a>Debian/Ubuntu Linux 安裝方式</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install iperf3</span><br></pre></td></tr></table></figure>
+
+<h4 id="測試網路頻寬"><a href="#測試網路頻寬" class="headerlink" title="測試網路頻寬"></a>測試網路頻寬</h4><ul>
+<li><p>一般在使用 iPerf3 測試時，要同時在 server 端與 client 端都各執行一個 iPerf3 程式，讓它們互相傳送資料進行測試，首先啟動 server 端的 <code>iperf3</code>：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Server 端</span></span><br><span class="line">iperf3 -s</span><br></pre></td></tr></table></figure></li>
+<li><p>client 端執行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Client 端</span></span><br><span class="line">iperf3 -c SERVER_IP</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="iPerf3-進階指令"><a href="#iPerf3-進階指令" class="headerlink" title="iPerf3 進階指令"></a>iPerf3 進階指令</h4><ul>
+<li><h3 id="測試時間"><a href="#測試時間" class="headerlink" title="測試時間"></a>測試時間</h3><ul>
+<li><p><code>-t</code> 參數可以指定傳輸測試的持續時間，而 <code>-i</code> 可以指定輸出數據的間隔時間：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 測試 20 秒，每隔 4 秒輸出測試數據</span></span><br><span class="line">iperf3 -c SERVER_IP -t 20 -i 4</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="儲存測試結果"><a href="#儲存測試結果" class="headerlink" title="儲存測試結果"></a>儲存測試結果</h3><ul>
+<li><p><code>--logfile</code> 參數可以將輸出的測試結果報表或是錯誤訊息儲存至檔案中：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 將輸出訊息儲存至 output.txt 檔案中</span></span><br><span class="line">iperf3 -c SERVER_IP --logfile output.txt</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="指定連接埠"><a href="#指定連接埠" class="headerlink" title="指定連接埠"></a>指定連接埠</h3><ul>
+<li><p>iPerf3 預設會使用的連接埠（port）是 <code>5201</code>，若要自行指定連接埠，可以使用 <code>-p</code> 參數：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 12345 這個連接埠的 server</span></span><br><span class="line">iperf3 -s -p 12345</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 12345 這個連接埠的 client</span></span><br><span class="line">iperf3 -c SERVER_IP -p 12345</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="JSON-格式輸出"><a href="#JSON-格式輸出" class="headerlink" title="JSON 格式輸出"></a>JSON 格式輸出</h3><ul>
+<li><p>若要使用程式讀取 iPerf3 的測試結果，可將輸出格式改為 JSON 會更方便。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 JSON 格式輸出</span></span><br><span class="line">iperf3 -c SERVER_IP -J</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="多線連接"><a href="#多線連接" class="headerlink" title="多線連接"></a>多線連接</h3><ul>
+<li><p><code>-P</code> 參數可以指定同時使用幾條連線進行測試：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 同時使用 2 條連線測試</span></span><br><span class="line">iperf3 -c SERVER_IP -P 2</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="UDP-傳輸協定"><a href="#UDP-傳輸協定" class="headerlink" title="UDP 傳輸協定"></a>UDP 傳輸協定</h3><ul>
+<li><p>若要測試 UDP 傳輸協定的效能，可以使用 <code>-u</code> 參數：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 UDP 傳輸協定</span></span><br><span class="line">iperf3 -c SERVER_IP -u</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="反向傳輸-上傳"><a href="#反向傳輸-上傳" class="headerlink" title="反向傳輸(上傳)"></a>反向傳輸(上傳)</h3><ul>
+<li><p>iPerf3 預設會測試上傳的速度（由 client 傳送資料，而 server 負責接收）若要測試下載的速度（由 server 傳送資料，而 client 負責接收），則可以使用 <code>-R</code> 參數：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 測試反向傳輸（下載）</span></span><br><span class="line">iperf3 -c SERVER_IP -R</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="IPv4-與-IPv6"><a href="#IPv4-與-IPv6" class="headerlink" title="IPv4 與 IPv6"></a>IPv4 與 IPv6</h3><ul>
+<li><p><code>-4</code> 與 <code>-6</code> 可以指定只使用 IPv4 或 IPv6：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 只使用 IPv4</span></span><br><span class="line">iperf3 -c SERVER_IP -4</span><br><span class="line"></span><br><span class="line"><span class="comment"># 只使用 IPv6</span></span><br><span class="line">iperf3 -c SERVER_IP -6</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><h3 id="自訂傳送檔案"><a href="#自訂傳送檔案" class="headerlink" title="自訂傳送檔案"></a>自訂傳送檔案</h3><ul>
+<li><p>我們可以使用 <code>-f</code> 自訂用來測試傳送的檔案：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用 YOUR_FILE 這個檔案來測試傳送速度</span></span><br><span class="line">iperf3 -c SERVER_IP -F YOUR_FILE</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>iperf3</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ubuntu 18.04 安裝 KVM</title>
+    <url>/2021/12/17/ubuntu-18-04-%E5%AE%89%E8%A3%9D-KVM/</url>
+    <content><![CDATA[<h2 id="ubuntu-18-04-安裝-KVM"><a href="#ubuntu-18-04-安裝-KVM" class="headerlink" title="ubuntu 18.04 安裝 KVM"></a>ubuntu 18.04 安裝 KVM</h2><span id="more"></span>
+<h3 id="檢查CPU是否支援虛擬化技術"><a href="#檢查CPU是否支援虛擬化技術" class="headerlink" title="檢查CPU是否支援虛擬化技術"></a>檢查CPU是否支援虛擬化技術</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">egrep -c <span class="string">&#x27;(svm|vmx)&#x27;</span> /proc/cpuinfo</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>若輸出為 0 則為不支援虛擬化技術,請檢查CPU是否支援虛擬化以及主機板BIOS是否開啟相關設定</li>
+</ul>
+<h3 id="安裝KVM"><a href="#安裝KVM" class="headerlink" title="安裝KVM"></a>安裝KVM</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install qemu-kvm libvirt-bin bridge-utils virt-manager</span><br></pre></td></tr></table></figure>
+
+<h3 id="啟動-KVM管理介面"><a href="#啟動-KVM管理介面" class="headerlink" title="啟動 KVM管理介面"></a>啟動 KVM管理介面</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo virt-manager</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>kvm</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用Harbor架設Registry</title>
+    <url>/2021/12/31/%E4%BD%BF%E7%94%A8Harbor%E6%9E%B6%E8%A8%ADRegistry/</url>
+    <content><![CDATA[<h2 id="使用Harbor架設Registry"><a href="#使用Harbor架設Registry" class="headerlink" title="使用Harbor架設Registry"></a>使用Harbor架設Registry</h2><blockquote>
+<p>Harbor 是開源的 Container Registry 專案 , 可提供權限控管並用來同時維護 Container Image 以及 Helm Charts .</p>
+</blockquote>
+<span id="more"></span>
+
+<h3 id="安裝環境"><a href="#安裝環境" class="headerlink" title="安裝環境"></a>安裝環境</h3><ul>
+<li>Kubernetes</li>
+<li>Helm 3 </li>
+<li>Traefik Ingress</li>
+</ul>
+<h3 id="安裝-Harbor"><a href="#安裝-Harbor" class="headerlink" title="安裝 Harbor"></a>安裝 Harbor</h3><ul>
+<li><p>加入倉庫</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">helm repo add bitnami https://charts.bitnami.com/bitnami</span><br></pre></td></tr></table></figure></li>
+<li><p>下載 Harbor</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">helm pull bitnami/harbor</span><br></pre></td></tr></table></figure></li>
+<li><p>修改 values.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#指定 storageClass  </span></span><br><span class="line"><span class="attr">global:</span></span><br><span class="line">  <span class="attr">imageRegistry:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">imagePullSecrets:</span> []</span><br><span class="line">  <span class="attr">storageClass:</span> <span class="string">&quot;&lt;your storageClass&gt;&quot;</span></span><br><span class="line"><span class="comment"># 指定 externalURL</span></span><br><span class="line"><span class="attr">externalURL:</span> <span class="string">https://&lt;your</span> <span class="string">domain&gt;</span></span><br><span class="line"><span class="comment"># 指定 service type 為 ClusterIP 以及 Harbor 的 domain</span></span><br><span class="line"><span class="attr">service:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">ClusterIP</span></span><br><span class="line">  <span class="attr">tls:</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">existingSecret:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="attr">notaryExistingSecret:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="attr">commonName:</span> <span class="string">&#x27;&lt;your domain&gt;&#x27;</span></span><br><span class="line"><span class="comment">#---------------------------------------------------    </span></span><br><span class="line"><span class="comment"># 若要使用自己的 postgresql 則設定</span></span><br><span class="line"><span class="attr">postgresql:</span></span><br><span class="line">  <span class="attr">enabled:</span> <span class="literal">false</span></span><br><span class="line"><span class="comment"># 並設定以下參數</span></span><br><span class="line"><span class="attr">externalDatabase:</span></span><br><span class="line">  <span class="attr">host:</span> <span class="string">localhost</span></span><br><span class="line">  <span class="attr">user:</span> <span class="string">bn_harbor</span></span><br><span class="line">  <span class="attr">password:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">5432</span></span><br><span class="line">  <span class="attr">sslmode:</span> <span class="string">disable</span></span><br><span class="line">  <span class="attr">coreDatabase:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">clairDatabase:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">clairUsername:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">clairPassword:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">notaryServerDatabase:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">notaryServerUsername:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">notaryServerPassword:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">notarySignerDatabase:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">notarySignerUsername:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">notarySignerPassword:</span> <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="comment"># 若要使用自己的 redis 則設定</span></span><br><span class="line"><span class="attr">redis:</span></span><br><span class="line">  <span class="attr">enabled:</span> <span class="literal">false</span></span><br><span class="line"><span class="comment"># 並設定以下參數  </span></span><br><span class="line"><span class="attr">externalRedis:</span></span><br><span class="line">  <span class="attr">host:</span> <span class="string">localhost</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">6379</span></span><br><span class="line">  <span class="attr">sentinel:</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">false</span></span><br><span class="line">    <span class="attr">masterSet:</span> <span class="string">&#x27;mymaster&#x27;</span></span><br><span class="line">    <span class="attr">hosts:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">password:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">coreDatabaseIndex:</span> <span class="string">&#x27;0&#x27;</span></span><br><span class="line">  <span class="attr">jobserviceDatabaseIndex:</span> <span class="string">&#x27;1&#x27;</span></span><br><span class="line">  <span class="attr">registryDatabaseIndex:</span> <span class="string">&#x27;2&#x27;</span></span><br><span class="line">  <span class="attr">chartmuseumDatabaseIndex:</span> <span class="string">&#x27;3&#x27;</span></span><br><span class="line">  <span class="attr">clairAdapterDatabaseIndex:</span> <span class="string">&#x27;4&#x27;</span></span><br><span class="line">  <span class="attr">trivyAdapterDatabaseIndex:</span> <span class="string">&#x27;5&#x27;</span>  </span><br></pre></td></tr></table></figure></li>
+<li><p>安裝 Harbor 至 Traefik Ingress 相同 Namespace 底下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">helm install  harbor .  -n &lt;Your Traefik Ingress Namespace&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>取得 admin password 用於登入</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 預設使用者帳號 admin 並亂數產生密碼</span></span><br><span class="line"><span class="built_in">echo</span> $(kubectl get secret --namespace &lt;Your Traefik Ingress Namespace&gt; harbor-core-envvars -o jsonpath=<span class="string">&quot;&#123;.data.HARBOR_ADMIN_PASSWORD&#125;&quot;</span> | base64 --decode)</span><br><span class="line"><span class="comment"># 若要自訂義密碼請修改 values.yaml 中的 harborAdminPassword: &quot;&quot;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="設定-Traefik-Ingress"><a href="#設定-Traefik-Ingress" class="headerlink" title="設定 Traefik Ingress"></a>設定 Traefik Ingress</h3><ul>
+<li><p>建立檔案 harbor-ingress.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">traefik.containo.us/v1alpha1</span> </span><br><span class="line"><span class="attr">kind:</span> <span class="string">IngressRoute</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">  <span class="attr">name:</span> <span class="string">harbor-route</span> </span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">  <span class="attr">entryPoints:</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="string">websecure</span></span><br><span class="line">  <span class="attr">routes:</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">Host(`&lt;your</span> <span class="string">domain&gt;`)</span></span><br><span class="line">  	<span class="comment"># middlewares 設定 IP 白名單 , 若不須設定可自行修改</span></span><br><span class="line">    <span class="attr">middlewares:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">traefik-real-ip</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">ipwhitelist</span></span><br><span class="line">    <span class="attr">kind:</span> <span class="string">Rule</span> </span><br><span class="line">    <span class="attr">services:</span> </span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">harbor</span> </span><br><span class="line">        <span class="attr">port:</span> <span class="number">443</span></span><br><span class="line">  <span class="attr">tls:</span> </span><br><span class="line">    <span class="attr">secretName:</span> <span class="string">&lt;your</span> <span class="string">tls&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>應用 harbor-ingress.yaml</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl apply -f .\harbor-ingress.yaml -n traefik-ingress</span><br></pre></td></tr></table></figure></li>
+<li><p>若有需求可將此段整合進 Chart 使用 Helm 統一部署</p>
+</li>
+</ul>
+<h3 id="推送-Docker-Image-至-Harbor"><a href="#推送-Docker-Image-至-Harbor" class="headerlink" title="推送 Docker Image 至 Harbor"></a>推送 Docker Image 至 Harbor</h3><ul>
+<li><p>登入 Registry</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker login &lt;your registry domain&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>標記要推送的鏡像</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 初始安裝後有預設項目 library ,可自行新增項目並修改</span></span><br><span class="line">docker tag SOURCE_IMAGE[:TAG] &lt;your registry domain&gt;/library/REPOSITORY[:TAG]</span><br></pre></td></tr></table></figure></li>
+<li><p>推送鏡像</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker push &lt;your registry domain&gt;/library/REPOSITORY[:TAG]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="推送-Chart-至-Harbor"><a href="#推送-Chart-至-Harbor" class="headerlink" title="推送 Chart 至 Harbor"></a>推送 Chart 至 Harbor</h3><ul>
+<li><p>標記要推送的 Chart</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">helm chart save CHART_PATH &lt;your registry domain&gt;/library/REPOSITORY[:TAG]</span><br></pre></td></tr></table></figure></li>
+<li><p>推送 Chart</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">helm chart push &lt;your registry domain&gt;/library/REPOSITORY[:TAG]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="Kubernetes-整合"><a href="#Kubernetes-整合" class="headerlink" title="Kubernetes 整合"></a>Kubernetes 整合</h3><ul>
+<li><p>在集群中創建保存授權令牌的Secret</p>
+<blockquote>
+<p>Kubernetes 集群使用 <code>docker-registry</code> 類型的 Secret 來通過容器倉庫的身份驗證,進而提取私有映像.</p>
+</blockquote>
+</li>
+<li><p>創建 Secret ,命名為<code>regcred</code></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl create secret docker-registry regcred \</span><br><span class="line">  --docker-server=&lt;your registry domain&gt; \</span><br><span class="line">  --docker-username=&lt;your username&gt; \</span><br><span class="line">  --docker-password=&lt;your password&gt; \</span><br><span class="line">  --docker-email=&lt;your email&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>檢查Secret <code>regcred</code></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl get secret regcred --output=yaml</span><br></pre></td></tr></table></figure></li>
+<li><p>創建一個使用你的 Secret 的 Pod</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">private-reg</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">private-reg-container</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">&lt;your-private-image&gt;</span></span><br><span class="line">  <span class="comment"># 透過 regcred 像私有倉庫驗證登入並進行拉取鏡像檔案</span></span><br><span class="line">  <span class="attr">imagePullSecrets:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">regcred</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="Harbor-的鏡像安全性掃描"><a href="#Harbor-的鏡像安全性掃描" class="headerlink" title="Harbor 的鏡像安全性掃描"></a>Harbor 的鏡像安全性掃描</h3><blockquote>
+<p>Harbor 預設使用 Trivy 作為鏡像安全掃描工具 ,Trivy 部署設定可修改 Harbor Chart 的 values.yaml.</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>kubernetes</category>
+      </categories>
+      <tags>
+        <tag>Harbor</tag>
+        <tag>Registry</tag>
       </tags>
   </entry>
   <entry>
@@ -797,97 +940,6 @@
       </categories>
       <tags>
         <tag>kubernetes</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ubuntu 18.04 安裝 KVM</title>
-    <url>/2021/12/17/ubuntu-18-04-%E5%AE%89%E8%A3%9D-KVM/</url>
-    <content><![CDATA[<h2 id="ubuntu-18-04-安裝-KVM"><a href="#ubuntu-18-04-安裝-KVM" class="headerlink" title="ubuntu 18.04 安裝 KVM"></a>ubuntu 18.04 安裝 KVM</h2><span id="more"></span>
-<h3 id="檢查CPU是否支援虛擬化技術"><a href="#檢查CPU是否支援虛擬化技術" class="headerlink" title="檢查CPU是否支援虛擬化技術"></a>檢查CPU是否支援虛擬化技術</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">egrep -c <span class="string">&#x27;(svm|vmx)&#x27;</span> /proc/cpuinfo</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>若輸出為 0 則為不支援虛擬化技術,請檢查CPU是否支援虛擬化以及主機板BIOS是否開啟相關設定</li>
-</ul>
-<h3 id="安裝KVM"><a href="#安裝KVM" class="headerlink" title="安裝KVM"></a>安裝KVM</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install qemu-kvm libvirt-bin bridge-utils virt-manager</span><br></pre></td></tr></table></figure>
-
-<h3 id="啟動-KVM管理介面"><a href="#啟動-KVM管理介面" class="headerlink" title="啟動 KVM管理介面"></a>啟動 KVM管理介面</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo virt-manager</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>linux</category>
-      </categories>
-      <tags>
-        <tag>kvm</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用Harbor架設Registry</title>
-    <url>/2021/12/31/%E4%BD%BF%E7%94%A8Harbor%E6%9E%B6%E8%A8%ADRegistry/</url>
-    <content><![CDATA[<h2 id="使用Harbor架設Registry"><a href="#使用Harbor架設Registry" class="headerlink" title="使用Harbor架設Registry"></a>使用Harbor架設Registry</h2><blockquote>
-<p>Harbor 是開源的 Container Registry 專案 , 可提供權限控管並用來同時維護 Container Image 以及 Helm Charts .</p>
-</blockquote>
-<span id="more"></span>
-
-<h3 id="安裝環境"><a href="#安裝環境" class="headerlink" title="安裝環境"></a>安裝環境</h3><ul>
-<li>Kubernetes</li>
-<li>Helm 3 </li>
-<li>Traefik Ingress</li>
-</ul>
-<h3 id="安裝-Harbor"><a href="#安裝-Harbor" class="headerlink" title="安裝 Harbor"></a>安裝 Harbor</h3><ul>
-<li><p>加入倉庫</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">helm repo add bitnami https://charts.bitnami.com/bitnami</span><br></pre></td></tr></table></figure></li>
-<li><p>下載 Harbor</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">helm pull bitnami/harbor</span><br></pre></td></tr></table></figure></li>
-<li><p>修改 values.yaml</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#指定 storageClass  </span></span><br><span class="line"><span class="attr">global:</span></span><br><span class="line">  <span class="attr">imageRegistry:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">imagePullSecrets:</span> []</span><br><span class="line">  <span class="attr">storageClass:</span> <span class="string">&quot;&lt;your storageClass&gt;&quot;</span></span><br><span class="line"><span class="comment"># 指定 externalURL</span></span><br><span class="line"><span class="attr">externalURL:</span> <span class="string">https://&lt;your</span> <span class="string">domain&gt;</span></span><br><span class="line"><span class="comment"># 指定 service type 為 ClusterIP 以及 Harbor 的 domain</span></span><br><span class="line"><span class="attr">service:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">ClusterIP</span></span><br><span class="line">  <span class="attr">tls:</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">existingSecret:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="attr">notaryExistingSecret:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="attr">commonName:</span> <span class="string">&#x27;&lt;your domain&gt;&#x27;</span></span><br><span class="line"><span class="comment">#---------------------------------------------------    </span></span><br><span class="line"><span class="comment"># 若要使用自己的 postgresql 則設定</span></span><br><span class="line"><span class="attr">postgresql:</span></span><br><span class="line">  <span class="attr">enabled:</span> <span class="literal">false</span></span><br><span class="line"><span class="comment"># 並設定以下參數</span></span><br><span class="line"><span class="attr">externalDatabase:</span></span><br><span class="line">  <span class="attr">host:</span> <span class="string">localhost</span></span><br><span class="line">  <span class="attr">user:</span> <span class="string">bn_harbor</span></span><br><span class="line">  <span class="attr">password:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">5432</span></span><br><span class="line">  <span class="attr">sslmode:</span> <span class="string">disable</span></span><br><span class="line">  <span class="attr">coreDatabase:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">clairDatabase:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">clairUsername:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">clairPassword:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">notaryServerDatabase:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">notaryServerUsername:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">notaryServerPassword:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">notarySignerDatabase:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">notarySignerUsername:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">notarySignerPassword:</span> <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="comment"># 若要使用自己的 redis 則設定</span></span><br><span class="line"><span class="attr">redis:</span></span><br><span class="line">  <span class="attr">enabled:</span> <span class="literal">false</span></span><br><span class="line"><span class="comment"># 並設定以下參數  </span></span><br><span class="line"><span class="attr">externalRedis:</span></span><br><span class="line">  <span class="attr">host:</span> <span class="string">localhost</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">6379</span></span><br><span class="line">  <span class="attr">sentinel:</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">false</span></span><br><span class="line">    <span class="attr">masterSet:</span> <span class="string">&#x27;mymaster&#x27;</span></span><br><span class="line">    <span class="attr">hosts:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">password:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">  <span class="attr">coreDatabaseIndex:</span> <span class="string">&#x27;0&#x27;</span></span><br><span class="line">  <span class="attr">jobserviceDatabaseIndex:</span> <span class="string">&#x27;1&#x27;</span></span><br><span class="line">  <span class="attr">registryDatabaseIndex:</span> <span class="string">&#x27;2&#x27;</span></span><br><span class="line">  <span class="attr">chartmuseumDatabaseIndex:</span> <span class="string">&#x27;3&#x27;</span></span><br><span class="line">  <span class="attr">clairAdapterDatabaseIndex:</span> <span class="string">&#x27;4&#x27;</span></span><br><span class="line">  <span class="attr">trivyAdapterDatabaseIndex:</span> <span class="string">&#x27;5&#x27;</span>  </span><br></pre></td></tr></table></figure></li>
-<li><p>安裝 Harbor 至 Traefik Ingress 相同 Namespace 底下</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">helm install  harbor .  -n &lt;Your Traefik Ingress Namespace&gt;</span><br></pre></td></tr></table></figure></li>
-<li><p>取得 admin password 用於登入</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 預設使用者帳號 admin 並亂數產生密碼</span></span><br><span class="line"><span class="built_in">echo</span> $(kubectl get secret --namespace &lt;Your Traefik Ingress Namespace&gt; harbor-core-envvars -o jsonpath=<span class="string">&quot;&#123;.data.HARBOR_ADMIN_PASSWORD&#125;&quot;</span> | base64 --decode)</span><br><span class="line"><span class="comment"># 若要自訂義密碼請修改 values.yaml 中的 harborAdminPassword: &quot;&quot;</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="設定-Traefik-Ingress"><a href="#設定-Traefik-Ingress" class="headerlink" title="設定 Traefik Ingress"></a>設定 Traefik Ingress</h3><ul>
-<li><p>建立檔案 harbor-ingress.yaml</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">traefik.containo.us/v1alpha1</span> </span><br><span class="line"><span class="attr">kind:</span> <span class="string">IngressRoute</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">  <span class="attr">name:</span> <span class="string">harbor-route</span> </span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">  <span class="attr">entryPoints:</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="string">websecure</span></span><br><span class="line">  <span class="attr">routes:</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">Host(`&lt;your</span> <span class="string">domain&gt;`)</span></span><br><span class="line">  	<span class="comment"># middlewares 設定 IP 白名單 , 若不須設定可自行修改</span></span><br><span class="line">    <span class="attr">middlewares:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">traefik-real-ip</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">ipwhitelist</span></span><br><span class="line">    <span class="attr">kind:</span> <span class="string">Rule</span> </span><br><span class="line">    <span class="attr">services:</span> </span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">harbor</span> </span><br><span class="line">        <span class="attr">port:</span> <span class="number">443</span></span><br><span class="line">  <span class="attr">tls:</span> </span><br><span class="line">    <span class="attr">secretName:</span> <span class="string">&lt;your</span> <span class="string">tls&gt;</span></span><br></pre></td></tr></table></figure></li>
-<li><p>應用 harbor-ingress.yaml</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl apply -f .\harbor-ingress.yaml -n traefik-ingress</span><br></pre></td></tr></table></figure></li>
-<li><p>若有需求可將此段整合進 Chart 使用 Helm 統一部署</p>
-</li>
-</ul>
-<h3 id="推送-Docker-Image-至-Harbor"><a href="#推送-Docker-Image-至-Harbor" class="headerlink" title="推送 Docker Image 至 Harbor"></a>推送 Docker Image 至 Harbor</h3><ul>
-<li><p>登入 Registry</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker login &lt;your registry domain&gt;</span><br></pre></td></tr></table></figure></li>
-<li><p>標記要推送的鏡像</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 初始安裝後有預設項目 library ,可自行新增項目並修改</span></span><br><span class="line">docker tag SOURCE_IMAGE[:TAG] &lt;your registry domain&gt;/library/REPOSITORY[:TAG]</span><br></pre></td></tr></table></figure></li>
-<li><p>推送鏡像</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker push &lt;your registry domain&gt;/library/REPOSITORY[:TAG]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="推送-Chart-至-Harbor"><a href="#推送-Chart-至-Harbor" class="headerlink" title="推送 Chart 至 Harbor"></a>推送 Chart 至 Harbor</h3><ul>
-<li><p>標記要推送的 Chart</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">helm chart save CHART_PATH &lt;your registry domain&gt;/library/REPOSITORY[:TAG]</span><br></pre></td></tr></table></figure></li>
-<li><p>推送 Chart</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">helm chart push &lt;your registry domain&gt;/library/REPOSITORY[:TAG]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="Kubernetes-整合"><a href="#Kubernetes-整合" class="headerlink" title="Kubernetes 整合"></a>Kubernetes 整合</h3><ul>
-<li><p>在集群中創建保存授權令牌的Secret</p>
-<blockquote>
-<p>Kubernetes 集群使用 <code>docker-registry</code> 類型的 Secret 來通過容器倉庫的身份驗證,進而提取私有映像.</p>
-</blockquote>
-</li>
-<li><p>創建 Secret ,命名為<code>regcred</code></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl create secret docker-registry regcred \</span><br><span class="line">  --docker-server=&lt;your registry domain&gt; \</span><br><span class="line">  --docker-username=&lt;your username&gt; \</span><br><span class="line">  --docker-password=&lt;your password&gt; \</span><br><span class="line">  --docker-email=&lt;your email&gt;</span><br></pre></td></tr></table></figure></li>
-<li><p>檢查Secret <code>regcred</code></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl get secret regcred --output=yaml</span><br></pre></td></tr></table></figure></li>
-<li><p>創建一個使用你的 Secret 的 Pod</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">private-reg</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">private-reg-container</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">&lt;your-private-image&gt;</span></span><br><span class="line">  <span class="comment"># 透過 regcred 像私有倉庫驗證登入並進行拉取鏡像檔案</span></span><br><span class="line">  <span class="attr">imagePullSecrets:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">regcred</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="Harbor-的鏡像安全性掃描"><a href="#Harbor-的鏡像安全性掃描" class="headerlink" title="Harbor 的鏡像安全性掃描"></a>Harbor 的鏡像安全性掃描</h3><blockquote>
-<p>Harbor 預設使用 Trivy 作為鏡像安全掃描工具 ,Trivy 部署設定可修改 Harbor Chart 的 values.yaml.</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>kubernetes</category>
-      </categories>
-      <tags>
-        <tag>Harbor</tag>
-        <tag>Registry</tag>
       </tags>
   </entry>
   <entry>
