@@ -20,20 +20,20 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="AWS  ECR ( Elastic Container Registry ) 使用 Amazon Elastic Container Registry (ECR) 是一個全受管Docker 容器登錄檔，可隨時隨地輕鬆存放、共享及部署容器映像。">
+  <meta name="description" content="Kubernetes 1.23 升級 1.24 節點錯誤及解決方法 使用 kubeadm 將Master 由 1.23.14 版本升級至 1.24.8 版本  問題        參照 官方文件 對 Master 節點進行 1.23 至 1.24 升級 , 完成後節點無法正常運作 , Master 節點顯示 Not Ready.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="AWS  ECR ( Elastic Container Registry ) 使用">
-<meta property="og:url" content="http://example.com/2021/12/16/AWS-ECR-Elastic-Container-Registry-%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:title" content="Kubernetes 1.23 升級 1.24 節點錯誤及解決方法">
+<meta property="og:url" content="http://example.com/2022/11/20/Kubernetes-1-23-%E5%8D%87%E7%B4%9A-1-24-%E7%AF%80%E9%BB%9E%E9%8C%AF%E8%AA%A4%E5%8F%8A%E8%A7%A3%E6%B1%BA%E6%96%B9%E6%B3%95/index.html">
 <meta property="og:site_name" content="re-forest 的部落格">
-<meta property="og:description" content="AWS  ECR ( Elastic Container Registry ) 使用 Amazon Elastic Container Registry (ECR) 是一個全受管Docker 容器登錄檔，可隨時隨地輕鬆存放、共享及部署容器映像。">
+<meta property="og:description" content="Kubernetes 1.23 升級 1.24 節點錯誤及解決方法 使用 kubeadm 將Master 由 1.23.14 版本升級至 1.24.8 版本  問題        參照 官方文件 對 Master 節點進行 1.23 至 1.24 升級 , 完成後節點無法正常運作 , Master 節點顯示 Not Ready.">
 <meta property="og:locale" content="zh_TW">
-<meta property="article:published_time" content="2021-12-16T15:44:00.000Z">
-<meta property="article:modified_time" content="2021-12-16T15:45:15.607Z">
+<meta property="article:published_time" content="2022-11-19T18:11:00.000Z">
+<meta property="article:modified_time" content="2022-11-19T18:15:12.983Z">
 <meta property="article:author" content="re-forest">
-<meta property="article:tag" content="ECR">
+<meta property="article:tag" content="kubernetes">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/2021/12/16/AWS-ECR-Elastic-Container-Registry-%E4%BD%BF%E7%94%A8/">
+<link rel="canonical" href="http://example.com/2022/11/20/Kubernetes-1-23-%E5%8D%87%E7%B4%9A-1-24-%E7%AF%80%E9%BB%9E%E9%8C%AF%E8%AA%A4%E5%8F%8A%E8%A7%A3%E6%B1%BA%E6%96%B9%E6%B3%95/">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>AWS  ECR ( Elastic Container Registry ) 使用 | re-forest 的部落格</title>
+  <title>Kubernetes 1.23 升級 1.24 節點錯誤及解決方法 | re-forest 的部落格</title>
   
 
 
@@ -190,7 +190,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/12/16/AWS-ECR-Elastic-Container-Registry-%E4%BD%BF%E7%94%A8/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/11/20/Kubernetes-1-23-%E5%8D%87%E7%B4%9A-1-24-%E7%AF%80%E9%BB%9E%E9%8C%AF%E8%AA%A4%E5%8F%8A%E8%A7%A3%E6%B1%BA%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/1123.jpg">
@@ -203,7 +203,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          AWS  ECR ( Elastic Container Registry ) 使用
+          Kubernetes 1.23 升級 1.24 節點錯誤及解決方法
         </h1>
 
         <div class="post-meta">
@@ -214,7 +214,7 @@
               <span class="post-meta-item-text">發表於</span>
               
 
-              <time title="創建時間：2021-12-16 23:44:00 / 修改時間：23:45:15" itemprop="dateCreated datePublished" datetime="2021-12-16T23:44:00+08:00">2021-12-16</time>
+              <time title="創建時間：2022-11-20 02:11:00 / 修改時間：02:15:12" itemprop="dateCreated datePublished" datetime="2022-11-20T02:11:00+08:00">2022-11-20</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -222,7 +222,7 @@
               </span>
               <span class="post-meta-item-text">分類於</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/AWS/" itemprop="url" rel="index"><span itemprop="name">AWS</span></a>
+                  <a href="/categories/kubernetes/" itemprop="url" rel="index"><span itemprop="name">kubernetes</span></a>
                 </span>
             </span>
 
@@ -237,29 +237,38 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="AWS-ECR-Elastic-Container-Registry-使用"><a href="#AWS-ECR-Elastic-Container-Registry-使用" class="headerlink" title="AWS  ECR ( Elastic Container Registry ) 使用"></a>AWS  ECR ( Elastic Container Registry ) 使用</h2><blockquote>
-<p>Amazon Elastic Container Registry (ECR) 是一個全受管Docker 容器登錄檔，可隨時隨地輕鬆存放、共享及部署容器映像。</p>
+        <h3 id="Kubernetes-1-23-升級-1-24-節點錯誤及解決方法"><a href="#Kubernetes-1-23-升級-1-24-節點錯誤及解決方法" class="headerlink" title="Kubernetes 1.23 升級 1.24 節點錯誤及解決方法"></a>Kubernetes 1.23 升級 1.24 節點錯誤及解決方法</h3><blockquote>
+<p>使用 kubeadm 將Master 由 1.23.14 版本升級至 1.24.8 版本</p>
 </blockquote>
+<h4 id="問題"><a href="#問題" class="headerlink" title="問題"></a>問題</h4><p>        參照 <a target="_blank" rel="noopener" href="https://v1-24.docs.kubernetes.io/zh-cn/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/#recovering-from-a-failure-state">官方文件</a> 對 Master 節點進行 1.23 至 1.24 升級 , 完成後節點無法正常運作 , Master 節點顯示 Not Ready.</p>
 <span id="more"></span>
-<h3 id="IAM角色權限賦予"><a href="#IAM角色權限賦予" class="headerlink" title="IAM角色權限賦予"></a>IAM角色權限賦予</h3><ul>
-<li>操作前須將 IAM 角色賦予 ECR 相關權限</li>
+<h4 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h4><p>         原節點建構時 Container Runtime 皆是使用 Docker Engine 來進行驅動 , 但1.24 版本開始 Dockershim 已從 Kubernetes 項目中移除 , 此 Master 節點未先行改用其他符合 CRI (Container Runtime Interface) 標準的 Container Runtime , 因此在升級完成後呈現  Not Ready.</p>
+<h4 id="解決過程"><a href="#解決過程" class="headerlink" title="解決過程"></a>解決過程</h4><ul>
+<li>參照 <a target="_blank" rel="noopener" href="https://serverfault.com/questions/1104591/error-failed-to-parse-kubelet-flag-unknown-flag-network-plugin">鏈結</a> 中的方法 , 先進行以下指令</li>
 </ul>
-<h3 id="安裝-AWS-Command-Line-Interface-AWS-CLI"><a href="#安裝-AWS-Command-Line-Interface-AWS-CLI" class="headerlink" title="安裝 AWS Command Line Interface (AWS CLI)"></a>安裝 AWS Command Line Interface (AWS CLI)</h3><ul>
-<li>安裝環境 : Linux x86 (64-bit)</li>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubeadm init phase kubelet<span class="literal">-start</span>     </span><br></pre></td></tr></table></figure>
+
+<p>        利用此指令重新生成正確的 kubeadm-flags.env</p>
+<ul>
+<li>再使用以下指令確認狀態</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 下載最新安裝檔案</span></span><br><span class="line">curl <span class="string">&quot;https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip&quot;</span> -o <span class="string">&quot;awscliv2.zip&quot;</span></span><br><span class="line"><span class="comment"># 解壓縮</span></span><br><span class="line">unzip awscliv2.zip</span><br><span class="line"><span class="comment"># 安裝</span></span><br><span class="line">sudo ./aws/install</span><br><span class="line"><span class="comment"># 顯示版本資訊</span></span><br><span class="line">aws --version</span><br></pre></td></tr></table></figure>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubeadm init phase preflight </span><br></pre></td></tr></table></figure>
 
-<h3 id="登入資訊設定"><a href="#登入資訊設定" class="headerlink" title="登入資訊設定"></a>登入資訊設定</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 設定 AWS CLI</span></span><br><span class="line">aws configure</span><br><span class="line"></span><br><span class="line"><span class="comment"># 填入資訊</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 存取金鑰 ID</span></span><br><span class="line">AWS Access Key ID [None]: </span><br><span class="line"><span class="comment"># 私密存取金鑰</span></span><br><span class="line">AWS Secret Access Key [None]: </span><br><span class="line"><span class="comment"># AWS 區域</span></span><br><span class="line">Default region name [None]: </span><br><span class="line"><span class="comment"># 輸出格式</span></span><br><span class="line">Default output format [None]: </span><br></pre></td></tr></table></figure>
+<p>       此指令會檢查  kuber-apisever 、kuber-controller-manager、kuber-scheduler、etcd 四個 yaml 文件以及 Container Runtime , 在此步驟發現 Container Runtime 未運行.</p>
+<ul>
+<li>參照 <a target="_blank" rel="noopener" href="https://serverfault.com/questions/1104591/error-failed-to-parse-kubelet-flag-unknown-flag-network-plugin">鏈結</a> 中的方法 , 進行以下指令</li>
+</ul>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">containerd config default &gt; /etc/containerd/config.toml</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;&quot;</span><span class="string">&quot;</span></span><br><span class="line"><span class="string">runtime-endpoint: unix:///run/containerd/containerd.sock</span></span><br><span class="line"><span class="string">image-endpoint: unix:///run/containerd/containerd.sock</span></span><br><span class="line"><span class="string">&quot;</span><span class="string">&quot;&quot;</span> &gt; /etc/crictl.yaml</span><br><span class="line">systemctl restart containerd</span><br></pre></td></tr></table></figure>
 
-<h3 id="取得docker登入資訊"><a href="#取得docker登入資訊" class="headerlink" title="取得docker登入資訊"></a>取得docker登入資訊</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 用於 AWS CLI v2</span></span><br><span class="line">aws ecr get-login-password</span><br><span class="line"></span><br><span class="line"><span class="comment">#info : 利用取得登入資訊若報錯可執行以下命令安裝元件</span></span><br><span class="line">sudo apt install gnupg2 pass</span><br></pre></td></tr></table></figure>
+<p>        此指令用意是使用 containerd 作為 Container Runtime , 至此 Container Runtime 恢復正常並呈現運行中.</p>
+<h4 id="檢查節點狀態"><a href="#檢查節點狀態" class="headerlink" title="檢查節點狀態"></a>檢查節點狀態</h4><p>        使用以下指令</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get nodes <span class="literal">-o</span> wide</span><br></pre></td></tr></table></figure>
 
-<h3 id="建立儲存庫"><a href="#建立儲存庫" class="headerlink" title="建立儲存庫"></a>建立儲存庫</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aws ecr create-repository --repository-name &lt;your repository-name&gt;</span><br></pre></td></tr></table></figure>
+<p>        輸出結果示例</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">NAME             STATUS   ROLES           AGE    VERSION    INTERNAL<span class="literal">-IP</span>     EXTERNAL<span class="literal">-IP</span>   OS<span class="literal">-IMAGE</span>             KERNEL<span class="literal">-VERSION</span>      CONTAINER<span class="literal">-RUNTIME</span></span><br><span class="line">cluster<span class="literal">-node01</span>   Ready    control<span class="literal">-plane</span>   <span class="number">367</span>d   v1.<span class="number">24.8</span>    <span class="number">192.168</span>.<span class="number">50.63</span>   &lt;none&gt;        Ubuntu <span class="number">20.04</span>.<span class="number">3</span> LTS   <span class="number">5.4</span>.<span class="number">0</span><span class="literal">-132</span><span class="literal">-generic</span>   containerd://<span class="number">1.4</span>.<span class="number">11</span></span><br><span class="line">cluster<span class="literal">-node02</span>   Ready    &lt;none&gt;          <span class="number">367</span>d   v1.<span class="number">23.14</span>   <span class="number">192.168</span>.<span class="number">50.64</span>   &lt;none&gt;        Ubuntu <span class="number">20.04</span>.<span class="number">3</span> LTS   <span class="number">5.4</span>.<span class="number">0</span><span class="literal">-125</span><span class="literal">-generic</span>   docker://<span class="number">20.10</span>.<span class="number">10</span></span><br><span class="line">cluster<span class="literal">-node03</span>   Ready    &lt;none&gt;          <span class="number">367</span>d   v1.<span class="number">23.14</span>   <span class="number">192.168</span>.<span class="number">50.65</span>   &lt;none&gt;        Ubuntu <span class="number">20.04</span>.<span class="number">3</span> LTS   <span class="number">5.4</span>.<span class="number">0</span><span class="literal">-125</span><span class="literal">-generic</span>   docker://<span class="number">20.10</span>.<span class="number">10</span></span><br><span class="line">cluster<span class="literal">-node04</span>   Ready    &lt;none&gt;          <span class="number">346</span>d   v1.<span class="number">23.14</span>   <span class="number">192.168</span>.<span class="number">50.68</span>   &lt;none&gt;        Ubuntu <span class="number">20.04</span>.<span class="number">3</span> LTS   <span class="number">5.4</span>.<span class="number">0</span><span class="literal">-125</span><span class="literal">-generic</span>   docker://<span class="number">20.10</span>.<span class="number">11</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="更換-欲上傳之-Docker-Image-Tag"><a href="#更換-欲上傳之-Docker-Image-Tag" class="headerlink" title="更換 欲上傳之 Docker  Image  Tag"></a>更換 欲上傳之 Docker  Image  Tag</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker tag &lt;<span class="built_in">local</span> image&gt; &lt;aws_account_id&gt;.dkr.ecr.&lt;region&gt;.amazonaws.com/&lt;repository_name&gt;:&lt;tag_name&gt;</span><br></pre></td></tr></table></figure>
+<p>        CONTAINER-RUNTIME 會由原本的 docker://20.10.10 改變為 containerd://1.4.11 至此確認 cluster 恢復正常運作.</p>
 
-<h3 id="上傳-Image"><a href="#上傳-Image" class="headerlink" title="上傳  Image"></a>上傳  Image</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker push &lt;aws_account_id&gt;.dkr.ecr.&lt;region&gt;.amazonaws.com/&lt;repository_name&gt;:&lt;tag_name&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="拉取-image"><a href="#拉取-image" class="headerlink" title="拉取 image"></a>拉取 image</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull &lt;aws_account_id&gt;.dkr.ecr.&lt;region&gt;.amazonaws.com/&lt;repository_name&gt;:&lt;tag_name&gt;</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -268,7 +277,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/ECR/" rel="tag"># ECR</a>
+              <a href="/tags/kubernetes/" rel="tag"># kubernetes</a>
           </div>
 
         
@@ -277,13 +286,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/12/15/Cloudflare%E5%BF%AB%E5%8F%96%E6%B8%85%E9%99%A4/" rel="prev" title="Cloudflare快取清除">
-      <i class="fa fa-chevron-left"></i> Cloudflare快取清除
+    <a href="/2022/11/19/Kubernetes-%E6%89%8B%E5%8B%95%E6%86%91%E8%AD%89%E6%9B%B4%E6%96%B0/" rel="prev" title="Kubernetes 手動憑證更新">
+      <i class="fa fa-chevron-left"></i> Kubernetes 手動憑證更新
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2021/12/17/ubuntu-18-04-%E5%AE%89%E8%A3%9D-KVM/" rel="next" title="ubuntu 18.04 安裝 KVM">
-      ubuntu 18.04 安裝 KVM <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -342,7 +348,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#AWS-ECR-Elastic-Container-Registry-%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">AWS  ECR ( Elastic Container Registry ) 使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IAM%E8%A7%92%E8%89%B2%E6%AC%8A%E9%99%90%E8%B3%A6%E4%BA%88"><span class="nav-number">1.1.</span> <span class="nav-text">IAM角色權限賦予</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%9D-AWS-Command-Line-Interface-AWS-CLI"><span class="nav-number">1.2.</span> <span class="nav-text">安裝 AWS Command Line Interface (AWS CLI)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%99%BB%E5%85%A5%E8%B3%87%E8%A8%8A%E8%A8%AD%E5%AE%9A"><span class="nav-number">1.3.</span> <span class="nav-text">登入資訊設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%96%E5%BE%97docker%E7%99%BB%E5%85%A5%E8%B3%87%E8%A8%8A"><span class="nav-number">1.4.</span> <span class="nav-text">取得docker登入資訊</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E5%84%B2%E5%AD%98%E5%BA%AB"><span class="nav-number">1.5.</span> <span class="nav-text">建立儲存庫</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%8F%9B-%E6%AC%B2%E4%B8%8A%E5%82%B3%E4%B9%8B-Docker-Image-Tag"><span class="nav-number">1.6.</span> <span class="nav-text">更換 欲上傳之 Docker  Image  Tag</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E5%82%B3-Image"><span class="nav-number">1.7.</span> <span class="nav-text">上傳  Image</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%89%E5%8F%96-image"><span class="nav-number">1.8.</span> <span class="nav-text">拉取 image</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Kubernetes-1-23-%E5%8D%87%E7%B4%9A-1-24-%E7%AF%80%E9%BB%9E%E9%8C%AF%E8%AA%A4%E5%8F%8A%E8%A7%A3%E6%B1%BA%E6%96%B9%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">Kubernetes 1.23 升級 1.24 節點錯誤及解決方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%95%8F%E9%A1%8C"><span class="nav-number">1.1.</span> <span class="nav-text">問題</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8E%9F%E5%9B%A0"><span class="nav-number">1.2.</span> <span class="nav-text">原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E6%B1%BA%E9%81%8E%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">解決過程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AA%A2%E6%9F%A5%E7%AF%80%E9%BB%9E%E7%8B%80%E6%85%8B"><span class="nav-number">1.4.</span> <span class="nav-text">檢查節點狀態</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
